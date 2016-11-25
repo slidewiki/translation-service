@@ -5,18 +5,57 @@ Controller for handling mongodb and the data model slide while providing CRUD'is
 'use strict';
 
 const helper = require('./helper'),
+    //
     slideModel = require('../models/slide.js'),
+    //request = require('request'),
+    ///wsClient = require('websocket').client,
     Microservices = require('../configs/microservices');
 
-function translate(original, target){
+let http = require('http');
+let translator = require('mstranslator');
+
+// const client_id = 'slidewiki';
+// const client_secret = '3irwtY/+pq0e7+SXbldxU0vwMzH2NLfuIJ9eoOxSyjo=';
+
+
+let client = new translator({
+    // client_id: client_id, // use this for the old token API
+    // client_secret: client_secret // use this for the old token API
+    api_key: '77e543f1cd854a8dae6ba7dd1ce1d1b9' //TODO need a better way to store this...
+
+}, true);
+
+function translateLine(line, source, target, callback){
+    let params = {
+        text: line,
+        from: source,
+        to: target
+    };
+    client.translate(params, (err, data) => {
+        callback(err, data);
+    });
+}
+
+function handle_translation(original, target){
     let translated = original;
-    translated.language = target;
-    return translated;
+    let source = 'en'; //TODO split the language here
+    let myPromise = new Promise((resolve, reject) => {
+        translateLine(translated.revisions[0].title, source, target, (err, data) => {
+            if (err) {
+                console.log(err);
+                reject(err);
+            }else{
+                translated.revisions[0].title = data;
+                resolve (translated);
+            }
+        });
+    });
+    return myPromise;
 }
 
 module.exports = {
     translate: function(id, target){
-        let http = require('http');
+
 
         let myPromise = new Promise((resolve, reject) => {
             let options = {
@@ -44,7 +83,7 @@ module.exports = {
                         if (original.revisions.length > 1){ //there was no revision specified, translate the active revision
                             original.revisions = [original.revisions[original.active-1]];
                         }
-                        resolve(translate(original,target));
+                        resolve(handle_translation(original,target));
                     }
                 });
             });
@@ -91,7 +130,7 @@ module.exports = {
     //         }); //id is created and concatinated automatically
     //     });
     // },
-    // 
+    //
     // replace: function (id, slide) {
     //     return helper.connectToDatabase()
     //     .then((db) => db.collection('slides'))
