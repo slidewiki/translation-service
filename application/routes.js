@@ -26,51 +26,51 @@ module.exports = function(server) {
     });
 
     //Create new slide (by payload) and return it (...). Validate payload
-    server.route({
-        method: 'POST',
-        path: '/slide/new',
-        handler: handlers.newSlide,
-        config: {
-            validate: {
-                payload: Joi.object().keys({
-                    title: Joi.string(),
-                    body: Joi.string(),
-                    user_id: Joi.string().alphanum().lowercase(),
-                    root_deck_id: Joi.string().alphanum().lowercase(),
-                    parent_deck_id: Joi.string().alphanum().lowercase(),
-                    no_new_revision: Joi.boolean(),
-                    position: Joi.number().integer().min(0),
-                    language: Joi.string()
-                }).requiredKeys('title', 'body'),
-            },
-            tags: ['api'],
-            description: 'Create a new slide'
-        }
-    });
+    // server.route({
+    //     method: 'POST',
+    //     path: '/slide/new',
+    //     handler: handlers.newSlide,
+    //     config: {
+    //         validate: {
+    //             payload: Joi.object().keys({
+    //                 title: Joi.string(),
+    //                 body: Joi.string(),
+    //                 user_id: Joi.string().alphanum().lowercase(),
+    //                 root_deck_id: Joi.string().alphanum().lowercase(),
+    //                 parent_deck_id: Joi.string().alphanum().lowercase(),
+    //                 no_new_revision: Joi.boolean(),
+    //                 position: Joi.number().integer().min(0),
+    //                 language: Joi.string()
+    //             }).requiredKeys('title', 'body'),
+    //         },
+    //         tags: ['api'],
+    //         description: 'Create a new slide'
+    //     }
+    // });
 
     //Update slide with id id (by payload) and return it (...). Validate payload
-    server.route({
-        method: 'PUT',
-        path: '/slide/{id}',
-        handler: handlers.replaceSlide,
-        config: {
-            validate: {
-                params: {
-                    id: Joi.string().alphanum().lowercase()
-                },
-                payload: Joi.object().keys({
-                    title: Joi.string(),
-                    body: Joi.string(),
-                    user_id: Joi.string().alphanum().lowercase(),
-                    root_deck_id: Joi.string().alphanum().lowercase(),
-                    parent_deck_id: Joi.string().alphanum().lowercase(),
-                    no_new_revision: Joi.boolean(),
-                    position: Joi.number().integer().min(0),
-                    language: Joi.string()
-                }).requiredKeys('title', 'body'),
-            },
-            tags: ['api'],
-            description: 'Replace a slide'
-        }
-    });
+    // server.route({
+    //     method: 'PUT',
+    //     path: '/slide/{id}',
+    //     handler: handlers.replaceSlide,
+    //     config: {
+    //         validate: {
+    //             params: {
+    //                 id: Joi.string().alphanum().lowercase()
+    //             },
+    //             payload: Joi.object().keys({
+    //                 title: Joi.string(),
+    //                 body: Joi.string(),
+    //                 user_id: Joi.string().alphanum().lowercase(),
+    //                 root_deck_id: Joi.string().alphanum().lowercase(),
+    //                 parent_deck_id: Joi.string().alphanum().lowercase(),
+    //                 no_new_revision: Joi.boolean(),
+    //                 position: Joi.number().integer().min(0),
+    //                 language: Joi.string()
+    //             }).requiredKeys('title', 'body'),
+    //         },
+    //         tags: ['api'],
+    //         description: 'Replace a slide'
+    //     }
+    // });
 };
