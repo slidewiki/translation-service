@@ -3,6 +3,6 @@
 
 module.exports = {
     'deck': {
-        uri: 'http://discussionservice.experimental.slidewiki.org',
+        uri: 'http://deckservice.experimental.slidewiki.org',
     }
 };
