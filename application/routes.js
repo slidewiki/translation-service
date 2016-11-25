@@ -8,20 +8,21 @@ const Joi = require('joi'),
     handlers = require('./controllers/handler');
 
 module.exports = function(server) {
-    //Get slide with id id from database and return it (when not available, return NOT FOUND). Validate id
+    //Get an object with id id from database and translate it to the target language (when not available, return NOT FOUND). Validate id
     server.route({
         method: 'GET',
-        path: '/slide/{id}/{target}',
-        handler: handlers.translateSlide,
+        path: '/{type}/{id}/{target}',
+        handler: handlers.translateObject,
         config: {
             validate: {
                 params: {
                     id: Joi.string(),
-                    target: Joi.string().alphanum().min(2).max(2).required()
+                    target: Joi.string().alphanum().min(2).max(2).required(),
+                    type: Joi.string().valid(['slide', 'deck'])
                 },
             },
             tags: ['api'],
-            description: 'Translate a slide'
+            description: 'Translate an object'
         }
     });
 
