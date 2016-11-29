@@ -10,16 +10,19 @@ const Joi = require('joi'),
 module.exports = function(server) {
     //Get an object with id id from database and translate it to the target language (when not available, return NOT FOUND). Validate id
     server.route({
-        method: 'GET',
-        path: '/{type}/{id}/{target}',
+        method: 'POST',
+        path: '/{type}/{id}',
         handler: handlers.translateObject,
         config: {
             validate: {
                 params: {
                     id: Joi.string(),
-                    target: Joi.string().alphanum().min(2).max(2).required(),
                     type: Joi.string().valid(['slide', 'deck'])
                 },
+                payload: {
+                    target: Joi.string().min(5).max(5).required(),
+                    user: Joi.string()
+                }
             },
             tags: ['api'],
             description: 'Translate an object'

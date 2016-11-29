@@ -13,6 +13,7 @@ const helper = require('./helper'),
 
 let http = require('http');
 let translator = require('mstranslator');
+let async = require('async');
 
 // const client_id = 'slidewiki';
 // const client_secret = '3irwtY/+pq0e7+SXbldxU0vwMzH2NLfuIJ9eoOxSyjo=';
@@ -36,25 +37,61 @@ function translateLine(line, source, target, callback){
     });
 }
 
-function handle_translation(original, target){
+function filterTags(content){
+
+}
+
+function addTagsBack(content, replace_array){
+
+}
+
+function handle_translation(original, target, user_id){
     let translated = original;
-    let source = 'en'; //TODO split the language here
+    let source = original.revisions[0].language.substring(0,2);
+    translated.user = parseInt(user_id);
+    translated.revisions[0].user = parseInt(user_id);
+    translated.revisions[0].language = target;
+    let target_code = target.substring(0,2);
+
     let myPromise = new Promise((resolve, reject) => {
-        translateLine(translated.revisions[0].title, source, target, (err, data) => {
+        async.series([
+            (cbAsync) => {
+                translateLine(translated.revisions[0].title, source, target_code, (err, new_line) => {
+                    if (err) cbAsync(err);
+                    else {
+                        translated.revisions[0].title = new_line;
+                        cbAsync();
+                    }
+                });
+            },
+            (cbAsync) => {
+                //let replace_array = array();
+                //let content = original.revisions[0].content;
+                //replace_array = filterTags(content);
+                translateLine(original.revisions[0].content, source, target_code, (err, new_line) => {
+                    if (err) cbAsync(err);
+                    else {
+                        //translated.revisions[0].content = addTagsBack(new_line, replace_array);
+                        translated.revisions[0].content = new_line;
+                        cbAsync();
+                    }
+                });
+            }
+        ], (err) => {
             if (err) {
                 console.log(err);
                 reject(err);
-            }else{
-                translated.revisions[0].title = data;
+            } else {
                 resolve (translated);
             }
         });
+
     });
     return myPromise;
 }
 
 module.exports = {
-    translate: function(id, target){
+    translate: function(id, target, user_id){
 
 
         let myPromise = new Promise((resolve, reject) => {
@@ -83,7 +120,7 @@ module.exports = {
                         if (original.revisions.length > 1){ //there was no revision specified, translate the active revision
                             original.revisions = [original.revisions[original.active-1]];
                         }
-                        resolve(handle_translation(original,target));
+                        resolve(handle_translation(original,target,user_id));
                     }
                 });
             });
