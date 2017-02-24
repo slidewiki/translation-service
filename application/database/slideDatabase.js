@@ -47,10 +47,12 @@ function addTagsBack(content, replace_array){
 
 function handle_translation(original, target, user_id){
     let translated = original;
-    let source = original.revisions[0].language.substring(0,2);
+    let sourceRevision = original.revisions[0];
+    let source = original.language.substring(0,2);
     translated.user = parseInt(user_id);
     translated.revisions[0].user = parseInt(user_id);
-    translated.revisions[0].language = target;
+    //translated.revisions[0].language = target;
+    translated.language = target;
     let target_code = target.substring(0,2);
 
     let myPromise = new Promise((resolve, reject) => {
@@ -93,43 +95,32 @@ function handle_translation(original, target, user_id){
 module.exports = {
     translate: function(id, target, user_id){
 
-
+        let rp = require('request-promise-native');
         let myPromise = new Promise((resolve, reject) => {
-            let options = {
-                host: Microservices.deck.uri,
-                port: Microservices.deck.port,
-                path: '/slide/'+id,
-                method: 'GET',
+
+            var options = {
+                uri: Microservices.deck.uri+'/slide/'+id,
                 headers : {
                     'Content-Type': 'application/json',
                     'Cache-Control': 'no-cache'
-                }
+                },
+                json: true
             };
-            let req = http.request(options, (res) => {
-                // console.log('STATUS: ' + res.statusCode);
-                // console.log('HEADERS: ' + JSON.stringify(res.headers));
-                res.setEncoding('utf8');
-                //console.log(res.data);
-                res.on('data', (chunk) => {
-                    let original = JSON.parse(chunk);
-
-                    if (original.error){
-                        //console.log(original);
-                        resolve({});
-                    }else{
-                        if (original.revisions.length > 1){ //there was no revision specified, translate the active revision
-                            original.revisions = [original.revisions[original.active-1]];
-                        }
-                        resolve(handle_translation(original,target,user_id));
+            rp(options).then(function (original){
+                if (original.error){
+                    //console.log(original);
+                    resolve({});
+                }else{
+                    if (original.revisions.length > 1){ //there was no revision specified, translate the active revision
+                        original.revisions = [original.revisions[original.active-1]];
                     }
-                });
-            });
-            req.on('error', (e) => {
-                console.log('problem with request slides: ' + e.message);
+                    resolve(handle_translation(original,target,user_id));
+                }
+            })
+            .catch(function (e){
+                console.log('problem with request slide: ' + e.message);
                 reject(e);
             });
-            //req.write(data);
-            req.end();
         });
         return myPromise;
 
