@@ -16,44 +16,34 @@ function translate(original, target){
 
 module.exports = {
     translate: function(id, target){
-        let http = require('http');
+        //let http = require('http');
+        let rp = require('request-promise-native');
 
         let myPromise = new Promise((resolve, reject) => {
-            let options = {
-                host: Microservices.deck.uri,
-                port: Microservices.deck.port,
-                path: '/deck/'+id,
-                method: 'GET',
+            var options = {
+                uri: Microservices.deck.uri+'/deck/'+id,
                 headers : {
                     'Content-Type': 'application/json',
                     'Cache-Control': 'no-cache'
-                }
+                },
+                json: true
             };
-            let req = http.request(options, (res) => {
-                // console.log('STATUS: ' + res.statusCode);
-                // console.log('HEADERS: ' + JSON.stringify(res.headers));
-                res.setEncoding('utf8');
-                //console.log(res.data);
-                res.on('data', (chunk) => {
-                    let original = JSON.parse(chunk);
-
-                    if (original.error){
-                        //console.log(original);
-                        resolve({});
-                    }else{
-                        if (original.revisions.length > 1){ //there was no revision specified, translate the active revision
-                            original.revisions = [original.revisions[original.active-1]];
-                        }
-                        resolve(translate(original,target));
+            rp(options).then(function (original){                
+                if (original.error){
+                    //console.log(original);
+                    resolve({});
+                }else{
+                    if (original.revisions.length > 1){ //there was no revision specified, translate the active revision
+                        original.revisions = [original.revisions[original.active-1]];
                     }
-                });
-            });
-            req.on('error', (e) => {
+                    resolve(translate(original,target));
+                }
+            })
+            .catch(function (e){
                 console.log('problem with request deck: ' + e.message);
                 reject(e);
             });
-            //req.write(data);
-            req.end();
+
         });
         return myPromise;
 

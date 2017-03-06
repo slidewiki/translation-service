@@ -20,7 +20,7 @@ module.exports = {
             case 'deck' : db_linker = deckDB;
                 break;
         }
-        console.log(request.params.user);
+        //console.log(request.payload.user);
         db_linker.translate(encodeURIComponent(request.params.id), encodeURIComponent(request.payload.target), encodeURIComponent(request.payload.user)).then((translatedObject) => {
             if (co.isEmpty(translatedObject))
                 reply(boom.notFound());
