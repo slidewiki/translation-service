@@ -7,6 +7,7 @@ Handles the requests by executing stuff and replying to the client. Uses promise
 const boom = require('boom'), //Boom gives us some predefined http codes and proper responses
     slideDB = require('../database/slideDatabase'), //Database functions specific for slides
     deckDB = require('../database/deckDatabase'), //Database functions specific for decks
+    helper = require('../database/helper'),
     co = require('../common');
 
 
@@ -31,6 +32,12 @@ module.exports = {
             reply(boom.badImplementation());
         });
     },
+
+    getSupported: function(request, reply){
+        helper.getLanguagesAndNames((err, languages) => {
+            reply(languages);
+        });
+    }
 
     //Create Slide with new id and payload or return INTERNAL_SERVER_ERROR
     // newSlide: function(request, reply) {
