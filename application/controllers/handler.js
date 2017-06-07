@@ -39,6 +39,8 @@ module.exports = {
         });
     }
 
+
+
     //Create Slide with new id and payload or return INTERNAL_SERVER_ERROR
     // newSlide: function(request, reply) {
     //     slideDB.insert(request.payload).then((inserted) => {

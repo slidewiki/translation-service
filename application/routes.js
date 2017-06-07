@@ -29,6 +29,16 @@ module.exports = function(server) {
         }
     });
 
+    server.route({
+        method: 'GET',
+        path: '/supported',
+        handler: handlers.getSupported,
+        config: {
+            tags: ['api']
+        }
+
+    });
+
     //Create new slide (by payload) and return it (...). Validate payload
     // server.route({
     //     method: 'POST',
