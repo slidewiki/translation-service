@@ -47,6 +47,7 @@ function addTagsBack(content, replace_array){
 
 function handle_translation(original, target, user_id){
     let translated = original;
+    console.log('TRANSLATED', translated);
     let sourceRevision = original.revisions[0];
     let source = original.language.substring(0,2);
     translated.user = parseInt(user_id);
@@ -111,8 +112,8 @@ module.exports = {
                     //console.log(original);
                     resolve({});
                 }else{
-                    if (original.revisions.length > 1){ //there was no revision specified, translate the active revision
-                        original.revisions = [original.revisions[original.active-1]];
+                    if (original.revisions.length > 1){ //there was no revision specified, translate the last revision
+                        original.revisions = [original.revisions[original.revisions.length-1]];
                     }
                     resolve(handle_translation(original,target,user_id));
                 }
