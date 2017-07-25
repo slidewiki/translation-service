@@ -49,7 +49,7 @@ function handle_translation(original, target, user_id){
     let translated = original;
     console.log('TRANSLATED', translated);
     let sourceRevision = original.revisions[0];
-    let source = original.language.substring(0,2);
+    let source = sourceRevision.language.substring(0,2);
     translated.user = parseInt(user_id);
     translated.revisions[0].user = parseInt(user_id);
     //translated.revisions[0].language = target;
