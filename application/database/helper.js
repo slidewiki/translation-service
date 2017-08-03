@@ -15,6 +15,22 @@ let incrementationSettings = {
     step: 1
 };
 
+function uniq(a) { //returns an array of unique values
+    var prims = {'boolean':{}, 'number':{}, 'string':{}}, objs = [];
+
+    return a.filter(function(item) {
+        if (item){
+            var type = typeof item;
+            if(type in prims)
+                return prims[type].hasOwnProperty(item) ? false : (prims[type][item] = true);
+            else
+            return objs.indexOf(item) >= 0 ? false : objs.push(item);
+        }else{
+            return false;
+        }
+    });
+}
+
 function testDbName(name) {
     return typeof name !== 'undefined' ? name : config.SLIDEWIKIDATABASE;
 }
@@ -22,7 +38,7 @@ function testDbName(name) {
 function testConnection(dbname) {
     if (!co.isEmpty(dbConnection)) { //TODO test for alive
         if (dbConnection.s.databaseName === dbname)
-        return true;
+            return true;
         else {
             dbConnection.close();
             dbConnection = undefined;
@@ -45,14 +61,15 @@ function getNextId(db, collectionName, fieldName) {
             field: fieldNameCorrected
         },
         null, //no sort
-        {
-            $inc: {
-                seq: step
-            }
-        }, {
-            upsert: true, //if there is a problem with _id insert will fail
-            new: true //insert returns the updated document
-        })
+            {
+                $inc: {
+                    seq: step
+                }
+            },
+            {
+                upsert: true, //if there is a problem with _id insert will fail
+                new: true //insert returns the updated document
+            })
         .then((result) => {
             console.log('getNextId: returned result', result);
             if (result.value && result.value.seq) {
@@ -94,17 +111,32 @@ module.exports = {
 
     getLanguagesAndNames: function(callback) {
         if (module.exports.languagesAndNames.length){
-            console.log('Taking from the cache');
             callback(null, module.exports.languagesAndNames);
         }else{
-            console.log('Filling the cache');
             let result = [];
             client.getLanguagesForTranslate((err, codes) => {
-                let params = {locale:'en', languageCodes: codes};
+                if (err) {
+                    console.log(err);
+                }
+                let filtered = codes.map((code) => { //removing 'complex' languages
+                    if (code.length >2){
+                        let splitted = code.split('-')[0];
+                        if (splitted.length === 2) return splitted;
+                        else return ;
+                    }else{
+                        return code;
+                    }
+                });
+                let unigue = uniq(filtered); //removing duplicates which appeared after simplifying the languages
+                let params = {locale:'en', languageCodes: unigue};
                 client.getLanguageNames(params, (err, names) => {
                     async.eachOf(codes, (value, key, cbEach) => {
-                        result.push({'name': names[key], 'code': codes[key]});
-                        cbEach();
+                        if (unigue[key]){
+                            result.push({'name': names[key], 'code': unigue[key]});
+                            cbEach();
+                        }else{
+                            cbEach();
+                        }
                     }, (err) => {
                         module.exports.languagesAndNames = result;
                         callback(err, result);
