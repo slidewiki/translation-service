@@ -52,6 +52,7 @@ function addTagsBack(content, replace_array){
 function handle_translation(original, target, user_id){
     let translated = original;
     const sourceRevision = original.revisions[0];
+
     delete translated.revisions[0].mysql_id;
     translated.origin = {
         id: original._id,
