@@ -112,9 +112,7 @@ module.exports = {
                 });
             });
         }
-
     },
-
     createDatabase: function (dbname) {
         dbname = testDbName(dbname);
 
@@ -151,12 +149,12 @@ module.exports = {
         dbname = testDbName(dbname);
 
         if (testConnection(dbname))
-        return Promise.resolve(dbConnection);
+            return Promise.resolve(dbConnection);
         else
         return MongoClient.connect('mongodb://' + config.HOST + ':' + config.PORT + '/' + dbname)
         .then((db) => {
             if (db.s.databaseName !== dbname)
-            throw new 'Wrong Database!';
+                throw new 'Wrong Database!';
             dbConnection = db;
             return db;
         });

@@ -1,7 +1,3 @@
-/*
-Controller for handling mongodb and the data model slide while providing CRUD'ish.
-*/
-
 'use strict';
 
 const helper = require('./helper'),
@@ -55,7 +51,8 @@ function addTagsBack(content, replace_array){
 
 function handle_translation(original, target, user_id){
     let translated = original;
-    const sourceRevision = original.revisions[0];    
+    const sourceRevision = original.revisions[0];
+
     delete translated.revisions[0].mysql_id;
     translated.origin = {
         id: original._id,
