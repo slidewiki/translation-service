@@ -1,7 +1,3 @@
-/*
-Controller for handling mongodb and the data model slide while providing CRUD'ish.
-*/
-
 'use strict';
 
 const helper = require('./helper'),
@@ -26,6 +22,14 @@ let client = new translator({
 
 }, true);
 
+function check_language_code(code, callback) {
+    helper.getLanguagesAndNames((err, languages) => {
+        if (err) callback(err);
+        let result = languages.map((a) => {return a.code;});
+        callback(null, result.includes(code));
+    });
+};
+
 function translateLine(line, source, target, callback){
     let params = {
         text: line,
@@ -47,17 +51,50 @@ function addTagsBack(content, replace_array){
 
 function handle_translation(original, target, user_id){
     let translated = original;
-    let sourceRevision = original.revisions[0];
-    let source = original.language.substring(0,2);
+    const sourceRevision = original.revisions[0];
+    delete translated.revisions[0].mysql_id;
+    translated.origin = {
+        id: original._id,
+        revision: sourceRevision._id,
+        title: sourceRevision.title,
+        user: sourceRevision.user,
+        kind: 'translation'
+    };
+    translated.revisions[0]._id = 1;
+    translated.revisions[0].id = 1;
+    delete translated.revisions[0].parent;
     translated.user = parseInt(user_id);
     translated.revisions[0].user = parseInt(user_id);
-    //translated.revisions[0].language = target;
-    translated.language = target;
-    let target_code = target.substring(0,2);
 
+    let source = sourceRevision.language.substring(0,2);
+    let target_code = target.substring(0,2);
     let myPromise = new Promise((resolve, reject) => {
         async.series([
+            (cb) => {
+                check_language_code(source, (err, result) => {
+                    if (err) cb(err);
+                    if (!result) {
+                        source = 'en';
+                        cb();
+                    }else{
+                        cb();
+                    }
+                });
+            },
+            (cb) => {
+                check_language_code(target_code, (err, result) => {
+                    if (err) cb(err);
+                    if (!result) {
+                        target_code = 'en';
+                        target = 'en_GB';
+                        cb();
+                    }else{
+                        cb();
+                    }
+                });
+            },
             (cbAsync) => {
+                console.log('Translating slide ' + original._id + ':' + source + '->' + target_code);
                 translateLine(translated.revisions[0].title, source, target_code, (err, new_line) => {
                     if (err) cbAsync(err);
                     else {
@@ -67,10 +104,7 @@ function handle_translation(original, target, user_id){
                 });
             },
             (cbAsync) => {
-                //let replace_array = array();
-                //let content = original.revisions[0].content;
-                //replace_array = filterTags(content);
-                translateLine(original.revisions[0].content, source, target_code, (err, new_line) => {
+                translateLine(translated.revisions[0].content, source, target_code, (err, new_line) => {
                     if (err) cbAsync(err);
                     else {
                         //translated.revisions[0].content = addTagsBack(new_line, replace_array);
@@ -84,12 +118,16 @@ function handle_translation(original, target, user_id){
                 console.log(err);
                 reject(err);
             } else {
+                translated.language = target;
+                translated.revisions[0].language = target;
                 resolve (translated);
             }
         });
-
     });
     return myPromise;
+
+
+
 }
 
 module.exports = {
@@ -111,8 +149,8 @@ module.exports = {
                     //console.log(original);
                     resolve({});
                 }else{
-                    if (original.revisions.length > 1){ //there was no revision specified, translate the active revision
-                        original.revisions = [original.revisions[original.active-1]];
+                    if (original.revisions.length > 1){ //there was no revision specified, translate the last revision
+                        original.revisions = [original.revisions[original.revisions.length-1]];
                     }
                     resolve(handle_translation(original,target,user_id));
                 }
