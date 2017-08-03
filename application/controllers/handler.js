@@ -41,6 +41,14 @@ module.exports = {
         });
     },
 
+    getSupported: function(request, reply){
+        helper.getLanguagesAndNames((err, languages) => {
+            reply(languages);
+        });
+    }
+
+
+
     //Create Slide with new id and payload or return INTERNAL_SERVER_ERROR
     // newSlide: function(request, reply) {
     //     slideDB.insert(request.payload).then((inserted) => {

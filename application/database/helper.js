@@ -85,6 +85,7 @@ let client = new translator({
 
 }, true);
 
+
 let languagesAndNames = [];
 
 module.exports = {
@@ -113,6 +114,7 @@ module.exports = {
         }
 
     },
+
     createDatabase: function (dbname) {
         dbname = testDbName(dbname);
 
