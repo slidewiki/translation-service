@@ -37,6 +37,7 @@
     "joi": "^9.0.4",
     "mongodb": "^2.2.8",
     "mstranslator": "^2.1.0",
+    "request-promise-native": "^1.0.4",
     "vision": "^4.1.0"
   },
   "engines": {

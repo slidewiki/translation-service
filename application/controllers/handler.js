@@ -12,6 +12,13 @@ const boom = require('boom'), //Boom gives us some predefined http codes and pro
 
 
 module.exports = {
+
+    getSupported: function(request, reply){
+        helper.getLanguagesAndNames((err, languages) => {
+            reply(languages);
+        });
+    },
+
     //Get slide from database or return NOT FOUND
     translateObject: function(request, reply) {
         let db_linker = '';
@@ -23,6 +30,7 @@ module.exports = {
         }
         //console.log(request.payload.user);
         db_linker.translate(encodeURIComponent(request.params.id), encodeURIComponent(request.payload.target), encodeURIComponent(request.payload.user)).then((translatedObject) => {
+            //if (err) console.log(err);
             if (co.isEmpty(translatedObject))
                 reply(boom.notFound());
             else

@@ -75,6 +75,7 @@ function getNextId(db, collectionName, fieldName) {
     return myPromise;
 }
 
+
 let translator = require('mstranslator');
 
 let client = new translator({
@@ -84,23 +85,34 @@ let client = new translator({
 
 }, true);
 
+
+let languagesAndNames = [];
+
 module.exports = {
     client: client,
+    languagesAndNames: languagesAndNames,
 
     getLanguagesAndNames: function(callback) {
-        let result = [];
-        client.getLanguagesForTranslate((err, codes) => {
-            let params = {locale:'en', languageCodes: codes};
-            client.getLanguageNames(params, (err, names) => {
-                async.eachOf(codes, (value, key, cbEach) => {
-                    result.push({'name': names[key], 'code': codes[key]});
-                    cbEach();
-                }, (err) => {
-                    console.log(result);
-                    callback(err, result);
+        if (module.exports.languagesAndNames.length){
+            console.log('Taking from the cache');
+            callback(null, module.exports.languagesAndNames);
+        }else{
+            console.log('Filling the cache');
+            let result = [];
+            client.getLanguagesForTranslate((err, codes) => {
+                let params = {locale:'en', languageCodes: codes};
+                client.getLanguageNames(params, (err, names) => {
+                    async.eachOf(codes, (value, key, cbEach) => {
+                        result.push({'name': names[key], 'code': codes[key]});
+                        cbEach();
+                    }, (err) => {
+                        module.exports.languagesAndNames = result;
+                        callback(err, result);
+                    });
                 });
             });
-        });
+        }
+
     },
 
     createDatabase: function (dbname) {
