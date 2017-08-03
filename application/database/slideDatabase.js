@@ -67,7 +67,15 @@ function handle_translation(original, target, user_id){
     translated.user = parseInt(user_id);
     translated.revisions[0].user = parseInt(user_id);
 
-    let source = sourceRevision.language.substring(0,2);
+    //let source = sourceRevision.language.substring(0,2);
+
+    let source = '';
+    if (sourceRevision.language) {
+        source = sourceRevision.language.substring(0,2);
+    }else{
+        source = original.language.substring(0,2);
+    }
+
     let target_code = target.substring(0,2);
     let myPromise = new Promise((resolve, reject) => {
         async.series([

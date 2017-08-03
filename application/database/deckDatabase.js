@@ -44,8 +44,17 @@ function addTagsBack(content, replace_array){
 function handle_translation(original, target, user_id){
     let translated = original;
     let sourceRevision = original.revisions[0];
-    console.log('original revisions language', original);
-    let source = original.revisions[0].language.substring(0,2);
+
+    //let source = original.revisions[0].language.substring(0,2);
+
+    let source = '';
+    if (sourceRevision.language) {
+        source = sourceRevision.language.substring(0,2);
+    }else{
+        source = original.language.substring(0,2);
+    }
+
+
     translated.user = parseInt(user_id);
     translated.revisions[0].user = parseInt(user_id);
     //translated.revisions[0].language = target;
