@@ -11,7 +11,8 @@ cache:
   directories:
   - "./application/node_modules"
 before_install:
-- if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" = "false" ] ; then ./travis_scripts/install_compose.sh ; fi
+- if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" = "false" ] ; then
+  ./travis_scripts/install_compose.sh ; fi
 - cd application
 before_script:
 - npm run start:mongodb
@@ -22,9 +23,12 @@ script:
 - npm run test:integration
 after_success:
 - cd ..
-- openssl aes-256-cbc -K $encrypted_2036d518b976_key -iv $encrypted_2036d518b976_iv -in deployment_keys.tar.enc -out deployment_keys.tar -d
-- if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" = "false" ] ; then ./travis_scripts/dockerhub.sh ; fi
-- if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" = "false" ] ; then ./travis_scripts/deploy.sh ; fi
+- openssl aes-256-cbc -K $encrypted_63eeb36ac281_key -iv $encrypted_63eeb36ac281_iv
+  -in deployment_keys.tar.enc -out deployment_keys.tar -d
+- if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" = "false" ] ; then
+  ./travis_scripts/dockerhub.sh ; fi
+- if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" = "false" ] ; then
+  ./travis_scripts/deploy.sh ; fi
 - cd application
 after_script:
 - npm run coverall
@@ -38,11 +42,11 @@ notifications:
     on_success: change
     on_failure: always
     rooms:
-      secure: qPAjYvVfyiiEYSrP4JnV/vSVRTGvETFdTGBb/TuLVynk84sOoH048udo1johLFCUALsmK7n11Nh9y2ehHo+jexH7UCzGHb4g7CJCNCa/EOIygMTbsntyspB2tCMAQbgf/hUMjGQrjqrysrvu21THhms2lRZ+fKFwmpI0xd+6MsSRVLjF95xl7gVC8ikIkUck27ZxcEOYhf3RK/tnPdbHjPu+dWSPkH7zVwLq3SvypRn7fwK9TDEo8VvXCNOF+6MX9KquCi251+0ZNTHKkiGkyqoz07tWPmaXuvf6v22XKZO8zWcDkA6qVtYheXkMYPl8cl0YAs5U7PwQz+mZhKQDbMoltj/NosKiKAtZk4Fg7ALweZE4wcIggfAhSe052ImgI06vtb1O6hVzGVxynT1vVISrPUymh2yNI/pJ1P/eHtFWg5TO+rxNHJSQYTWWRLxjEvgolDSpdOikDLRt/GrE7qkvqv0ONNPrxf2/bZBQaT27ALN/CWz5KiGAGSq8dilwiIBjUBRJCDgnmZQsa2p3kFUti7+TjMB0NhSpNc6ht8zje7lL5DSUMx6VgbOoVK3cK4zpKsiLfOgnWU0AKQWohaNCDoNe3JxZl+pINUy4sSDq/dDaDOC4wSn3p4zKD/ryJoftkzEHTQFy9HC8epgU1s3xXFCN3d9u2KblWnCCiCc=
+      secure: y7n3UlV+PXrcJsHZ8ht6K/cLpitZJaPHq2xdiw2/XdEpDg8COmoOHLyLoX6LWHWniNf64tnbql3GuUFGqtOrFkqRCjNhsasik72UMnzREHblDG2UE+8V7q2o2ptbtzowmJ4GS4Oe8FmMoapuIXthTdDjbHbJXRp58IAKvjBrNUYqCy2FkVBfjOL0d564bMxJBMY0Q0Zp1gP80lLr28z972Sob7FOrZ3eHt426XpbyD4+1ncwKc8qIfI/UuBRH3y7Esa7U3DPTJ/fwOTzG1PqgW5kpwcLghJyUY2xgnlIUG/30NhZKh8OnOrq/wTqtD7mMTIydwzK0EICQlKQFuRG+hacupCs1uj1qIEbKnSy6X7nylOS6GekMiy8HxkkeFYFBSVn6RJ+7Z86C73LbE/Wj6+Oel4aEJFDbVE7re9OaOhUnJTgotoDeOPE3dxDMgnX+XGMMWkrO3LFMVJngYpcYJ43jvZNaPEoBLBFkbyBEI1ndKzr6uMbuOuIf57LWH03b5mYF5l0xw9JVEXQPtjrKtrPgUaMCrvcX3/cjgmFLM91CADT74w3E6tBv34Fy18iunjxUS6po3RIA2mnFoel/VAtl8u/XfwM2R6EFsp29h2t1JGvVeSYCr5c5WkjBKNep9DoiWfBhaPcQG5NDl1vzWdMwtM5coxJxNO7Gh73BPA=
 env:
   global:
   - DOCKER_COMPOSE_VERSION=1.6.2
   - DATABASE_PORT=27018
-  - secure: niRoMA4VJzpaAaeTNxKN66E9RsWiRCBxcLkYccfRxVMc2y8VWpU3T2BAxmp2gf8dQEWBnT+eZ53okEmlr7qIc41n7m/sDP+8Id+5YwlD57FlEe5Tb4Dma3ESO3f3YvEcCxHqab4VfU4er6sy5M9E6sCknlGTbXDBnuwzj1V8H2eXo8Nf+zFYr4fBnf51KSw7E0RfpERvYremxrMQGFl9IrYtNH4iRxrA/Gj2zc0AvfztK4vjEYN4DYXJ+5j7eMNo970DxsRR82o8FPhDQiv+kHFwtQ3CXEr+vJ1xnaY/MXNic0W7fvt5eo+asUOQ7W6/aCKkmEqjBznmOjuGtrgluASZstS/OD3hV2nRQQhvsUZVu/FWyi4NHnlFp5EWH5bXyKehIaRGPYMiMbaN00u+O43k3PAGbPNh4XxoWrowjArV+On53KGse98LhZ8aexBRw2qVs3/ZrmPXYjBNjGomAbOdiOLyxZmxTz/PUJrRz7hk5E4wni0avb7F2s/1yqQHztghMhaEYV9+o22X3mdHXIibue0tfHwuY3Vi5v7RVB7ZtDnt1jJ+Gt5wUjHxOP0628mx1AwbPMvSqICTbtAo82GFQ3Hk8mJjMDsfjsYxsHRNXOngrkSMae3KGbToY2goj4uctl9bR2JfJfLJq1RTBaj8UdMwuwSRKG9Ckn7Ksn8=
-  - secure: JQNxr47y9aHbZsUTO9bDX0gc3Bg4eIvmazJai6SbzTZnKAUjIYrsSB6jaJBtjwTCYEPcB/vkZZeKVBYc/u1ZMkaMhowlrd89ROCOmkxwJBZmRpN352hz4/FP9yxW1v+VJ8x3w9IAHe9ratuoCRjExYEQCdDVt0VnyIjH8EI9hz3jFzIXROQyFwY7cCoFpyZTeKc7p9/Weq91V9nWck5J7xe1Mcgq+Q7GK0iR2Kk1iwRuoXdewdCwn5zCQfM7t8TVK2SF+BHYLQZZSqIjMjfBmFLdDriVZTn9/OZB+3lwacN1bcfZULlOe+4z7yE/y/449+JX7lTxPAf4CUzNrcwE7HbWn2ZTzc2T4KSPn+q0BvZkmfxjpAxN1x+BMLS5VBmtmHw8SAfo45CR/c4BtuSeFTjV3l2ZzyOCP4VVnuF+3/0RC4M+nhzmHPXInYkOd587dkzjGvjUSr0qPuiamsyWsOIX/lz8rJRP+WrInhs4HHUZIAh26ndvsjnTzC/toXIsUPxJDTXTHaF92MmoQfcmSRX3CqdMFaMP3kLxlOJT7Tfl2BTVX0yuQHdigbw7NohiuMxTxVzsKojFOcelr84qlZwomkRF/MhL9aCqy/bCQNXcjBrL9x7LEr8PGpT3Y2brixUUhYlkQkwssM3kX7qDNt71BCbiYZNTx7GIA0WAOx4=
-  - secure: OQ5nCq5T1R90/SbQGAOWmd8J7SXKB7azfZUoqzjutoQf1n3XaGJHoXoLqBLvWLfLDqLr+t6GR80RDSDjmUJJu1qu7hW1K3b1wD+04wS7U/3G3CxF36pEnPCZpWL6tKco+WaP1uDnxtbcy1Whev5I/fqzF5vk6uaojx3wnHi+pE9kkFQoa1JwIwK5vZUu2UDuO0QNOT512xs+4LHcizF0RK2kygHxt+r1nNDaUE0kFse2sIgibY2BSXCs83x/4whFxXEWabLI8NEAMdBfYH7EcwfS/nNvrldguK7g3C+ILrMAcgTsPJXrnRBRD0SxIDcNtMBjw633vWrKhVH55M/3EZzyiBdytJCJ9muuCShrxGq39EJoY9KfNWLAK/NyeML952WPsrjxyjKdvCr3C8jBNmw9jPXjJy/JHZz0EOzYKnCgopSSf4ukuyBsBL9K3FslBIVXNKLXG0/tb97+vAK7Qc3jOdrlLsIlCTMtkvXEk4FlwOJeIeN6OMPFjqxrBaG7D2Q9th3hWZ+fe7201whT50jSXGPkzUeT9ir/HkTdFvJBhCvaz0h9xpAwNbd1Stt7eAwPxRkPuxCJyqq5NRiGB2cPGP88yQO/6wBUekMhLATI9wDBPLGi20WCDr4WQ3o7KN/srus5agqY9HMKC2GtrsYP2nKfdi2Mxpn9dREairs=
+  - secure: NJx0RLIAT1fX2C5RZi+9ZVfmtnKsibBteLmHegwGWaxP5CDJGXbxm3dnbsPMKG8Pc5dXv175GgKy6Jh/gVnLb0yKMSq0HyU8bfPnGmKPTwWacMAp/cqXXxNg4lm866pyAjwOmfeJll02HVLpRknOpQgveWHLgYkDbm0A5L5L6yroeCkWyQZQBYXyHur0myACIx6FnekFMeVDrWmBsWiKSclaVnVRryNeAPVHq92PoWGsRfMtQZmvwVCvbllrgQfAEeQ/ZFTBGUNuduBeGCQ+T8kt3Mx3xyvbKv8FTr+9U3Qmx8h2SiJvF5xwMc0o+UBlbIHibanpfanfyade4SajVMxfdJ49e3KlatgBtfcgvAydzG9QuNUtdS9xi0CZiN/laZOpoK1lwF7mrhjDBaRqAMIUIH7OdkVgz2/5TBTUTN1p17f3NonbmK9AOSgqzT3J4A19fVYiZzAIuojymdwPBjjZA3gEHQmQo/05r3DA0Y0mamt2xpLox0Rj+p4cwjEqiPHsjZzEhZLWWM1z+D9hP8sDFYXCv1RdwE82NMJLdwjas1AaCIVtZn2fIf+4KWD+mZK+hKPc8b4jo/6XxIffJrTQTweq8uMxhQpkPjd2+V5e1+2GvcTm0PKtoFa6VDMNhA+ZHnCM1M8taN/eUChQJ3o09hEE4B16FEld7cHjh5o=
+  - secure: Ww4aCid2/qDXjB6bVJ1O/x69d1ITm7q05eiylTm6IMu8NnoKWU6AjrNDkkxa4I8uFby+ZwHAIyAZIiX0CWVSekFY+Lfkj6JT8q3R+iP4766mqA1w3TBmRSz1s9aCkuYTXd2MUIHRCKtx4Y2Tvh02RUGWw1dQo3INqyl5hvJSDIG9pU7df7K+qa2YMLk+HrtB9/uLcFb1CEg6nw2zWpXWTW6H9RRmbdpbur9MrOaDgLy2Hgh789jcG9Zcf4jBcjnjZveCVqnAB+ILakvQbPNq8WYu8jMccVfESNsDWwCSA/MYZGM+yYWwOszhYQyJpRZiw/fTUVfWfUyhvefFOVFHwWLPfens0HJoiiY6ksjoY+HR6moJ42UyC/kT3Ml83gy+OTEpA7nIw3kd1qZRsCh3uHgTpFogQLQOBZ+JjnwwhCa13tko1Qjb3gTpQLpWtpF5AF9Hm7RPsqOQUuNArE/56CxADy84oM6z5Wy5B59ZYKfzyJi6eHhVoo2+yJXV984cfG+oGWOc8t7xqJ4hPrKIpRqCBCFT3abuo/i9hdQmzNoLlaK2ZCkR9vq86ZytHo39KqbEso8SBNf+AdnZTnfW73on8vKQEL70/3kzTGl619VHkdKQxpJjHDG/I228LbyIHHnPb1B7nxCN+E6q+kNgcVaXtczCRj2SAQqVCF6fRwY=
+  - secure: riUA0h4tjksw1pKBc/RBTbJggIsulP5chUU89VILLS54U3M7OJzr+DXiOFkhMHSzfq/B9Fde0xFnZxetk4pOwrM+ksGIVaVBkwFUAQ8rMlEbPcYe0cJV6y/7xn06vhlQHGwuO8iWA+RQK6r46TC6gJjxQCnoubcC9MFfDIf1AKVqGeOUUaJ45hu1Ppl4tG60KjAmnN5OzcZZgTubM5vkX+yeHFS8z5f8o0WCA4gm1m3FgTzyKlx0b6olX7F7hs38J70UmjjMTOuRoJvxsPXqzOTTGfdbXNhCIA8fq7kHEtyffuf96f7f+KXNDtlnssmCWmqbKZdD4Jre0p2Nnhoupj2ZX0D95eEFLr5K/2tfLcpZ4ZHjYD8/avLP1XcPG46vVmx2CacmACPJVm+mDkozS/KyM+Jbtq9Lq1TWbvcEpmKv0Sh7EHNfiaKoUozhBN5Gr9m45sHHC8Fg8UgJLjwthuIF6IXI21eTApWNQbHxz8Zv6fiVBSDaTbfYBl4d7d6v2PnzQUtjTiwAppGF5kcxx0a6LQzlNhtN5ePKwMsXLu89Bgnul7n56dKNGxJb5v0ko+EJMVuJg2NOuckIgBT6og8RT7kohnqbo1Oafxiz+uZXN+FxWFXrxLtoiS4hO+oqZgV/wX12GYnboRXguE6822QaB06Ua6Ck2bU0n68TSXo=
