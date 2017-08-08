@@ -30,7 +30,7 @@ after_success:
   ./travis_scripts/deploy.sh ; fi
 - cd application
 after_script:
-#- npm run coverall
+- npm run coverall
 - npm run stop:mongodb
 - rm -f deployment_keys.tar
 - rm -f ~/.docker/{cert.pem,key.pem,ca.pem,config.json}
