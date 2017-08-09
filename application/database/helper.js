@@ -1,10 +1,10 @@
 'use strict';
 
 const Db = require('mongodb').Db,
-Server = require('mongodb').Server,
-MongoClient = require('mongodb').MongoClient,
-config = require('../configuration.js').MongoDB,
-co = require('../common');
+    Server = require('mongodb').Server,
+    MongoClient = require('mongodb').MongoClient,
+    config = require('../configuration.js').MongoDB,
+    co = require('../common');
 
 let async = require('async');
 
