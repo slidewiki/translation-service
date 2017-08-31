@@ -9,6 +9,6 @@ template:
     - APPLICATION_PORT=80
     - DATABASE_PORT=27017
     - VIRTUAL_HOST=translationservice.experimental.slidewiki.org
-    - SERVICE_URL_DECK=deckservice.experimental.slidewiki.org
     - LETSENCRYPT_HOST=translationservice.experimental.slidewiki.org
     - LETSENCRYPT_EMAIL=pbaptist@uni-bonn.de
+    - SERVICE_URL_DECK=https://deckservice.experimental.slidewiki.org
