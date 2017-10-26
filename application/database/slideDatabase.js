@@ -34,7 +34,8 @@ function translateLine(line, source, target, callback){
     let params = {
         text: line,
         from: source,
-        to: target
+        to: target,
+        contentType: 'text/html'
     };
     client.translate(params, (err, data) => {
         callback(err, data);
