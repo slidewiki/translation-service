@@ -10,6 +10,7 @@ const helper = require('./helper'),
 let http = require('http');
 let translator = require('mstranslator');
 let async = require('async');
+let request = require('request');
 
 // const client_id = 'slidewiki';
 // const client_secret = '3irwtY/+pq0e7+SXbldxU0vwMzH2NLfuIJ9eoOxSyjo=';
@@ -38,16 +39,43 @@ function translateLine(line, source, target, callback){
         contentType: 'text/html'
     };
     client.translate(params, (err, data) => {
+        console.log(err);
         callback(err, data);
     });
 }
 
-function filterTags(content){
+function translateContent(array, source, target, callback){
+    let pieces = [];
+    async.each(array, (text_piece, cbEach) => {
+        let params = {
+            text: text_piece,
+            from: source,
+            to: target,
+            contentType: 'text/html'
+        };
+        client.translate(params, (err, data) => {
+            if (err) cbEach(err);
+            else{
+                if (data){
+                    console.log(data);
+                    pieces.push(data);
+                }
+                cbEach(null);
+            }
+        });
+    }, (err) => {
+        if (err) callback(err, null);
+        else{
+            let result = pieces.join('');
+            callback(null, result);
+        }
+    });
 
 }
 
-function addTagsBack(content, replace_array){
-
+function splitContent(content){ //splitting the content on chunks of 1000 symbols to translate
+    let result = content.match(/.{1,10000}/g);
+    return result;
 }
 
 function handle_translation(original, target, user_id){
@@ -74,10 +102,14 @@ function handle_translation(original, target, user_id){
     if (sourceRevision.language) {
         source = sourceRevision.language.substring(0,2);
     }else{
-        source = original.language.substring(0,2);
+        if (original.language){
+            source = original.language.substring(0,2).toLowerCase();
+        }else{
+            source = 'en';
+        }
     }
 
-    let target_code = target.substring(0,2);
+    let target_code = target.substring(0,2).toLowerCase();
     let myPromise = new Promise((resolve, reject) => {
         async.series([
             (cb) => {
@@ -106,6 +138,7 @@ function handle_translation(original, target, user_id){
             (cbAsync) => {
                 console.log('Translating slide ' + original._id + ':' + source + '->' + target_code);
                 translateLine(translated.revisions[0].title, source, target_code, (err, new_line) => {
+
                     if (err) cbAsync(err);
                     else {
                         translated.revisions[0].title = new_line;
@@ -114,11 +147,12 @@ function handle_translation(original, target, user_id){
                 });
             },
             (cbAsync) => {
-                translateLine(translated.revisions[0].content, source, target_code, (err, new_line) => {
+                let content_array = splitContent(translated.revisions[0].content);
+                translateContent(content_array, source, target_code, (err, new_content) => {
                     if (err) cbAsync(err);
                     else {
                         //translated.revisions[0].content = addTagsBack(new_line, replace_array);
-                        translated.revisions[0].content = new_line;
+                        translated.revisions[0].content = new_content;
                         cbAsync();
                     }
                 });
