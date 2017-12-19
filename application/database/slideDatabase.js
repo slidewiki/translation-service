@@ -15,12 +15,14 @@ let async = require('async');
 // const client_secret = '3irwtY/+pq0e7+SXbldxU0vwMzH2NLfuIJ9eoOxSyjo=';
 
 
-let client = new translator({
-    // client_id: client_id, // use this for the old token API
-    // client_secret: client_secret // use this for the old token API
-    api_key: '77e543f1cd854a8dae6ba7dd1ce1d1b9' //TODO need a better way to store this...
+// let client = new translator({
+//     // client_id: client_id, // use this for the old token API
+//     // client_secret: client_secret // use this for the old token API
+//     api_key: '77e543f1cd854a8dae6ba7dd1ce1d1b9' //TODO need a better way to store this...
+//
+// }, true);
 
-}, true);
+let client = require('./mockup_translation');
 
 function check_language_code(code, callback) {
     helper.getLanguagesAndNames((err, languages) => {
@@ -73,8 +75,10 @@ function handle_translation(original, target, user_id){
     let source = '';
     if (sourceRevision.language) {
         source = sourceRevision.language.substring(0,2);
-    }else{
+    }else if (original.language){
         source = original.language.substring(0,2);
+    }else{
+        source = 'en';
     }
 
     let target_code = target.substring(0,2);

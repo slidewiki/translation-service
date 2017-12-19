@@ -15,12 +15,13 @@ let translator = require('mstranslator');
 let async = require('async');
 
 
-let client = new translator({
-    // client_id: client_id, // use this for the old token API
-    // client_secret: client_secret // use this for the old token API
-    api_key: '77e543f1cd854a8dae6ba7dd1ce1d1b9' //TODO need a better way to store this...
-
-}, true);
+// let client = new translator({
+//     // client_id: client_id, // use this for the old token API
+//     // client_secret: client_secret // use this for the old token API
+//     api_key: '77e543f1cd854a8dae6ba7dd1ce1d1b9' //TODO need a better way to store this...
+//
+// }, true);
+let client = require('./mockup_translation');
 
 function translateLine(line, source, target, callback){
     let params = {
@@ -51,8 +52,10 @@ function handle_translation(original, target, user_id){
     let source = '';
     if (sourceRevision.language) {
         source = sourceRevision.language.substring(0,2);
-    }else{
+    }else if (original.language){
         source = original.language.substring(0,2);
+    }else{
+        source = 'en';
     }
 
 
