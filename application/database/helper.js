@@ -92,17 +92,15 @@ function getNextId(db, collectionName, fieldName) {
     return myPromise;
 }
 
-//
-// let translator = require('mstranslator');
-//
-// let client = new translator({
-//     // client_id: client_id, // use this for the old token API
-//     // client_secret: client_secret // use this for the old token API
-//     api_key: '77e543f1cd854a8dae6ba7dd1ce1d1b9' //TODO need a better way to store this...
-//
-// }, true);
 
-let client = require('./mockup_translation');
+let translator = require('mstranslator');
+
+let client = new translator({
+    // client_id: client_id, // use this for the old token API
+    // client_secret: client_secret // use this for the old token API
+    api_key: '77e543f1cd854a8dae6ba7dd1ce1d1b9' //TODO need a better way to store this...
+
+}, true);
 
 
 let languagesAndNames = [];
