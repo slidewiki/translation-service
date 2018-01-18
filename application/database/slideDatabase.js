@@ -126,7 +126,8 @@ function handle_translation(original, target, user_id){
                         cbAsync();
                     }
                 });
-            }
+            },
+            
         ], (err) => {
             if (err) {
                 console.log(err);

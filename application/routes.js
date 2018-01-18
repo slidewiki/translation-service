@@ -39,6 +39,16 @@ module.exports = function(server) {
 
     });
 
+    server.route({
+        method: 'GET',
+        path: '/jobByNewId/{newId}',
+        handler: handlers.getJobByNewId,
+        config: {
+            tags: ['api']
+        }
+
+    });
+
     //Create new slide (by payload) and return it (...). Validate payload
     // server.route({
     //     method: 'POST',

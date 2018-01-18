@@ -8,7 +8,8 @@ const boom = require('boom'), //Boom gives us some predefined http codes and pro
     slideDB = require('../database/slideDatabase'), //Database functions specific for slides
     deckDB = require('../database/deckDatabase'), //Database functions specific for decks
     helper = require('../database/helper'),
-    co = require('../common');
+    co = require('../common'),
+    jobDB = require('../database/jobDatabase');
 
 
 module.exports = {
@@ -45,7 +46,22 @@ module.exports = {
         helper.getLanguagesAndNames((err, languages) => {
             reply(languages);
         });
+    },
+
+    getJobByNewId: function(request, reply) {
+        jobDB.getJobByNewId(request.params.newId)
+            .then((job) => {
+                console.log(job.progress);
+                reply(job);
+            })
+            .catch((err) => {
+                console.log('error', err);
+                reply(boom.notFound());
+            }            );
+
     }
+
+
 
 
 
