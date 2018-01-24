@@ -27,6 +27,7 @@
   "dependencies": {
     "ajv": "^4.5.0",
     "boom": "^4.0.0",
+    "cheerio": "^1.0.0-rc.2",
     "database-cleaner": "^1.1.0",
     "good": "^7.0.2",
     "good-console": "^6.1.2",
