@@ -18,11 +18,7 @@ function maskHtmlTags(html) {
   });
 
   // console.log('root node:', $.root(), "\n");
-  // console.log('children:', $('body').children(), "\n");
-
-  // console.log('body nodevalue:', $('body').contents(), "\n");
-
-  // let firstNodes = $('body').contents();
+  // console.log('body children:', $('body').contents(), "\n");
 
   //get existing ids
   $('[id]').map((index, element) => {
@@ -30,13 +26,18 @@ function maskHtmlTags(html) {
     return $(element).attr('id');
   });
 
-  console.log('get all ids:', existingIds);
+  console.log('got all ids:', existingIds);
 
-  let snippets = extractValue_rec($('body').contents());
-  console.log('recursive result:', filterTextSnippets(snippets), "\n");
+  let snippets = getTextSnippets_rec($('body').contents());
+  let filteredSnippets = filterTextSnippets(snippets);
+  console.log('recursive result:', filteredSnippets, "\n");
   // console.log('Did the html change?', $.root().html(), "\n");
 
-  return {text: extractValue($('body')), html: $.root().html()};
+  return {
+    simpleText: extractValue($('body')),
+    html: $.root().html(),
+    text: makeTextOutOfSnippets(filteredSnippets)
+  };
 }
 
 function filterTextSnippets(snippets) {
@@ -44,9 +45,8 @@ function filterTextSnippets(snippets) {
   return snippets.filter(snippet => snippet.text.replace(/\r?\n|\r|\t|-|\+/g, '') !== '');
 }
 
-function extractValue_rec(childs) {
-  // let childs = node.contents();
-  console.log('extractValue_rec got', childs.length, 'childs:', childs, "\n");
+function getTextSnippets_rec(childs) {
+  console.log('getTextSnippets_rec got', childs.length, 'childs:', childs, "\n");
   switch (childs.length) {
     case 0:
       return [];
@@ -54,8 +54,8 @@ function extractValue_rec(childs) {
     case 1:
       console.log('handle node with one child which type is', childs[0].type, "\n");
       if (childs[0].type === 'text')
-        return [{text: childs[0].nodeValue || childs[0].text(), id: getId($(childs[0]))}];
-      return extractValue_rec(childs.contents());//TODO check if this works
+        return [{text: extractValue(childs[0]), id: getId($(childs[0]))}];
+      return getTextSnippets_rec(childs.contents());
       break;
     default:
       let result = [];
@@ -63,12 +63,19 @@ function extractValue_rec(childs) {
       childs.each((index, element) => {
         console.log('recursive now with each - current element:', element, "\n");
         if (element.children)
-          result = result.concat(extractValue_rec($(element.children)));
+          result = result.concat(getTextSnippets_rec($(element.children)));
         else if (element.type === 'text')
           result = result.concat([{text: element.data, id: getId($(element))}]);
       });
       return result;
   }
+}
+
+function makeTextOutOfSnippets(snippets) {
+  return snippets.reduce((a, s) => {
+    a += ' ' + s.id + ': ' + s.text;
+    return a;
+  }, '');
 }
 
 function extractValue(node) {

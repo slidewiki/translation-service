@@ -109,26 +109,34 @@ describe('Unit Tests - htmlHandler.js', () => {
 
   context('Basic html to text', () => {
     it('one title', () => {
-      let {text, map} = handler.htmlToText(html1);
+      let {text, simpleText, html} = handler.htmlToText(html1);
 
-      expect(text).to.equal(`Title of the year`);
+      console.log('New text:', text);
+
+      expect(simpleText).to.equal(`Title of the year`);
     });
     it('one title and a paragraph', () => {
-      let {text, map} = handler.htmlToText(html2);
+      let {text, simpleText, html} = handler.htmlToText(html2);
 
-      expect(text).to.equal(`Title of the year
+      console.log('New text:', text);
+
+      expect(simpleText).to.equal(`Title of the year
 Paragraph of the month`);
     });
     it('one title and a paragraph with bold text nd text in between', () => {
-      let {text, map} = handler.htmlToText(html3);
+      let {text, simpleText, html} = handler.htmlToText(html3);
 
-      expect(text).to.equal(`Title of the year
+      console.log('New text:', text);
+
+      expect(simpleText).to.equal(`Title of the year
 Paragraph of the month`);
     });
     it('big html from slide  (slidewiki.aksw.org)', () => {
-      let {text, map} = handler.htmlToText(html4);
+      let {text, simpleText, html} = handler.htmlToText(html4);
 
-      expect(text).to.equal(`Lernziele und Übersicht
+      console.log('New text:', text);
+
+      expect(simpleText).to.equal(`Lernziele und Übersicht
         Systemmodellierung
         Vorstellung von Systemmodellen, die als Teil des RE und Entwurfsprozesses zum Einsatz kommen,
         Einsatz grafischer Modelle zur Repräsentation von Softwaresystemen,
