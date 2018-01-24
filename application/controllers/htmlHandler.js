@@ -7,40 +7,64 @@ let existingIds = [];
 
 module.exports = {
   htmlToText: (html) => {
-    return maskHtmlTags(html);
+    $ = cheerio.load(html, {
+      normalizeWhitespace: false,
+      recognizeSelfClosing: true,
+      withDomLvl1: false
+    });
+
+    // console.log('root node:', $.root(), "\n");
+    // console.log('root children:', $.root().children(), '!!!!!!!!!!!!!', $('body').html(), "\n");
+    // console.log('body children:', $('body').contents(), "\n");
+
+    //get existing ids
+    $('[id]').map((index, element) => {
+      existingIds.push(parseInt($(element).attr('id')));
+      return $(element).attr('id');
+    });
+
+    console.log('got all ids:', existingIds);
+
+    let snippets = getTextSnippets_rec($('body').contents());
+    let filteredSnippets = filterTextSnippets(snippets);
+    console.log('recursive result:', filteredSnippets, "\n");
+    // console.log('Did the html change?', $.root().html(), "\n");
+
+    return {
+      simpleText: extractValue($('body')),
+      html: $.root().html(),
+      text: makeTextOutOfSnippets(filteredSnippets)
+    };
+  },
+
+  setTranslatedTextInHtml: (translatedText, html) => {
+    let snippets = preparedTextToSnippets(translatedText);
+    $ = cheerio.load(html, {
+      normalizeWhitespace: false,
+      recognizeSelfClosing: true,
+      withDomLvl1: false
+    });
+
+    let k = 0;
+    for (k in snippets.ids) {
+      $('#' + snippets.ids[k]).contents().each((index, element) => {
+        console.log('Found element with id', snippets.ids[k]);
+        if (element.type === 'text') {
+          console.log('Now setting text on', element, ', text is:', snippets.texts[k]);
+          //$(element).text(snippets.texts[k]);
+          element.data = snippets.texts[k];
+        }
+      })
+    }
+    $.root().html();
+    return $('body').html(); //TODO check if this works with unescaped html stuff
   }
 };
 
-function maskHtmlTags(html) {
-  $ = cheerio.load(html, {
-    normalizeWhitespace: false,
-    recognizeSelfClosing: true
-  });
-
-  // console.log('root node:', $.root(), "\n");
-  // console.log('body children:', $('body').contents(), "\n");
-
-  //get existing ids
-  $('[id]').map((index, element) => {
-    existingIds.push(parseInt($(element).attr('id')));
-    return $(element).attr('id');
-  });
-
-  console.log('got all ids:', existingIds);
-
-  let snippets = getTextSnippets_rec($('body').contents());
-  let filteredSnippets = filterTextSnippets(snippets);
-  console.log('recursive result:', filteredSnippets, "\n");
-  // console.log('Did the html change?', $.root().html(), "\n");
-
-  return {
-    simpleText: extractValue($('body')),
-    html: $.root().html(),
-    text: makeTextOutOfSnippets(filteredSnippets)
-  };
-}
+//-------- htmlToText functions --------//
 
 function filterTextSnippets(snippets) {
+  //TODO also filter Maths, Code, ...
   console.log('snippets type is', Object.prototype.toString.call(snippets), "\n");
   return snippets.filter(snippet => snippet.text.replace(/\r?\n|\r|\t|-|\+/g, '') !== '');
 }
@@ -73,7 +97,7 @@ function getTextSnippets_rec(childs) {
 
 function makeTextOutOfSnippets(snippets) {
   return snippets.reduce((a, s) => {
-    a += ' ' + s.id + ': ' + s.text;
+    a += ' :' + s.id + ':: ' + s.text;
     return a;
   }, '');
 }
@@ -105,4 +129,20 @@ function generateNewId() {
   }
 
   return id;
+}
+
+//-------- setTranslatedTextInHtml functions --------//
+
+function preparedTextToSnippets(text) {
+  let translatedTexts = text.split(/\s\:\d{3,12}\:\:\s/g);
+  translatedTexts.shift(); //first element is nulll thus should be removed
+  let ids = text.match(/\s\:\d{3,12}\:\:\s/g).reduce((a, id) => {
+    a.push(parseInt(id.substring(2, id.length - 3)));
+    return a;
+  }, []);
+
+  return {
+    ids: ids,
+    texts: translatedTexts
+  };
 }

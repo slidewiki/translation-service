@@ -18,12 +18,16 @@ describe('Unit Tests - htmlHandler.js', () => {
   });
 
   const html1 = '<h1 id="41477">Title of the year</h1>';
+  const translatedText1 = ' :41477:: Titel des Jahres';
 
   const html2 = `<h1 id="41477">Title of the year</h1>
 <p id="12874">Paragraph of the month</p>`;
+const translatedText2 = ' :41477:: Titel des Jahres :12874:: Paragraph des Monats';
 
   const html3 = `<h1 id="41477">Title of the year</h1>
-<p id="12874">Paragraph of the <b>month</b></p>`;
+<p id="12874">Paragraph of the <b>month</b></p>
+extra content`;
+const translatedText3 = ' :41477:: Titel des Jahres :12874:: Paragraph des :100:: Monat :101:: extra Inhalt';
 
   const html4 = `<div class="pptx2html" id="81669" style="position: relative; width: 960px; height: 720px; border-style: double; border-color: rgba(218, 102, 25, 0.5); transform: scale(1.13048, 1.13048); transform-origin: left top 0px;">
 <div id="76310"></div>
@@ -111,41 +115,60 @@ describe('Unit Tests - htmlHandler.js', () => {
     it('one title', () => {
       let {text, simpleText, html} = handler.htmlToText(html1);
 
-      console.log('New text:', text);
+      console.log('New text:', text, "\n");
 
       expect(simpleText).to.equal(`Title of the year`);
+
+      //now use translated text to update html
+      let translatedHtml = handler.setTranslatedTextInHtml(translatedText1, html);
+
+      expect(translatedHtml).to.equal(`<h1 id="41477">Titel des Jahres</h1>`);
     });
     it('one title and a paragraph', () => {
       let {text, simpleText, html} = handler.htmlToText(html2);
 
-      console.log('New text:', text);
+      console.log('New text:', text, "\n");
 
       expect(simpleText).to.equal(`Title of the year
 Paragraph of the month`);
+
+      //now use translated text to update html
+      let translatedHtml = handler.setTranslatedTextInHtml(translatedText2, html);
+
+      expect(translatedHtml).to.equal(`<h1 id="41477">Titel des Jahres</h1>
+    <p id="12874">Paragraph des Monats</p>`);
     });
-    it('one title and a paragraph with bold text nd text in between', () => {
+    it('one title and a paragraph with bold text and text in between', () => {
       let {text, simpleText, html} = handler.htmlToText(html3);
 
-      console.log('New text:', text);
+      console.log('New text:', text, "\n");
 
       expect(simpleText).to.equal(`Title of the year
-Paragraph of the month`);
-    });
-    it('big html from slide  (slidewiki.aksw.org)', () => {
-      let {text, simpleText, html} = handler.htmlToText(html4);
+Paragraph of the month
+extra content`);
 
-      console.log('New text:', text);
+      //now use translated text to update html
+      let translatedHtml = handler.setTranslatedTextInHtml(translatedText3, html);
 
-      expect(simpleText).to.equal(`Lernziele und Übersicht
-        Systemmodellierung
-        Vorstellung von Systemmodellen, die als Teil des RE und Entwurfsprozesses zum Einsatz kommen,
-        Einsatz grafischer Modelle zur Repräsentation von Softwaresystemen,
-        Warum sind unterschiedliche Modelltypen notwendig?
-        Kontextmodelle
-        Interaktionsmodelle
-        Strukturmodelle
-        Verhaltensmodelle
-        Konzepte auf denen die modellgetriebene Softwareentwicklung beruht, um beispielsweise ein System aus struktur- und verhaltensbasierten Modellen zu erzeugen.`);
+      expect(translatedHtml).to.equal(`<h1 id="41477">Titel des Jahres</h1>
+<p id="12874">Paragraph des <b id="100">Monat</b></p>
+extra Inhalt`);
     });
+    // it('big html from slide  (slidewiki.aksw.org)', () => {
+    //   let {text, simpleText, html} = handler.htmlToText(html4);
+    //
+    //   console.log('New text:', text, "\n");
+    //
+    //   expect(simpleText).to.equal(`Lernziele und Übersicht
+    //     Systemmodellierung
+    //     Vorstellung von Systemmodellen, die als Teil des RE und Entwurfsprozesses zum Einsatz kommen,
+    //     Einsatz grafischer Modelle zur Repräsentation von Softwaresystemen,
+    //     Warum sind unterschiedliche Modelltypen notwendig?
+    //     Kontextmodelle
+    //     Interaktionsmodelle
+    //     Strukturmodelle
+    //     Verhaltensmodelle
+    //     Konzepte auf denen die modellgetriebene Softwareentwicklung beruht, um beispielsweise ein System aus struktur- und verhaltensbasierten Modellen zu erzeugen.`);
+    // });
   });
 });
