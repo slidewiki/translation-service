@@ -18,16 +18,18 @@ describe('Unit Tests - htmlHandler.js', () => {
   });
 
   const html1 = '<h1 id="41477">Title of the year</h1>';
-  const translatedText1 = ' :41477:: Titel des Jahres';
+  const translatedText1 = ': 41477:: Titel des Jahres';
 
   const html2 = `<h1 id="41477">Title of the year</h1>
 <p id="12874">Paragraph of the month</p>`;
-const translatedText2 = ' :41477:: Titel des Jahres :12874:: Paragraph des Monats';
+const translatedText2 = `: 41477:: Titel des Jahres: 12874:: Paragraph des Monats`;
 
   const html3 = `<h1 id="41477">Title of the year</h1>
+dummytext
 <p id="12874">Paragraph of the <b>month</b></p>
 extra content`;
-const translatedText3 = ' :41477:: Titel des Jahres :12874:: Paragraph des :100:: Monat :101:: extra Inhalt';
+const translatedText3 = `: 41477:: Titel des Jahres: 12874:: Paragraph des: 102:: Monat: 100:: dummytext: 101::
+extra Inhalt`;
 
   const html4 = `<div class="pptx2html" id="81669" style="position: relative; width: 960px; height: 720px; border-style: double; border-color: rgba(218, 102, 25, 0.5); transform: scale(1.13048, 1.13048); transform-origin: left top 0px;">
 <div id="76310"></div>
@@ -116,6 +118,7 @@ const translatedText3 = ' :41477:: Titel des Jahres :12874:: Paragraph des :100:
       let {text, simpleText, html} = handler.htmlToText(html1);
 
       console.log('New text:', text, "\n");
+      console.log('New html:', html, "\n");
 
       expect(simpleText).to.equal(`Title of the year`);
 
@@ -136,7 +139,7 @@ Paragraph of the month`);
       let translatedHtml = handler.setTranslatedTextInHtml(translatedText2, html);
 
       expect(translatedHtml).to.equal(`<h1 id="41477">Titel des Jahres</h1>
-    <p id="12874">Paragraph des Monats</p>`);
+<p id="12874">Paragraph des Monats</p>`);
     });
     it('one title and a paragraph with bold text and text in between', () => {
       let {text, simpleText, html} = handler.htmlToText(html3);
@@ -144,6 +147,7 @@ Paragraph of the month`);
       console.log('New text:', text, "\n");
 
       expect(simpleText).to.equal(`Title of the year
+dummytext
 Paragraph of the month
 extra content`);
 
@@ -151,9 +155,11 @@ extra content`);
       let translatedHtml = handler.setTranslatedTextInHtml(translatedText3, html);
 
       expect(translatedHtml).to.equal(`<h1 id="41477">Titel des Jahres</h1>
+dummytext
 <p id="12874">Paragraph des <b id="100">Monat</b></p>
 extra Inhalt`);
     });
+
     // it('big html from slide  (slidewiki.aksw.org)', () => {
     //   let {text, simpleText, html} = handler.htmlToText(html4);
     //
