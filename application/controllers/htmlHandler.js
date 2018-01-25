@@ -2,7 +2,7 @@
 
 const cheerio = require('cheerio'),
   REGEX_MASK_AFTER_TRANSLATION = /\:\s\d{3,12}\-?\d{0,5}\:\:\s/g,
-  REGEX_EMPTY_STRING = /\r?\n|\r|\t|-|\+/g;
+  REGEX_EMPTY_STRING = /\r?\s|\n|\r|\t|-|\+*/g;
 
 
 let $ = {};
@@ -27,12 +27,12 @@ module.exports = {
       return $(element).attr('id');
     });
 
-    console.log('got all ids:', existingIds);
+    // console.log('got all ids:', existingIds);
 
     let snippets = getTextSnippets_rec($('body').contents());
-    console.log('unfiltered snippets:', snippets, "\n");
+    // console.log('unfiltered snippets:', snippets, "\n");
     let filteredSnippets = filterTextSnippets(snippets);
-    console.log('filtered snippets:', filteredSnippets, "\n");
+    // console.log('filtered snippets:', filteredSnippets, "\n");
     let deduplicatedSnippets = checkAndHandleMultipleIdsInSNippets(filteredSnippets);
     console.log('deduplicated snippets:', deduplicatedSnippets, "\n");
     // console.log('Did the html change?', $.root().html(), "\n");
@@ -57,7 +57,7 @@ module.exports = {
       withDomLvl1: false
     });
 
-    console.log('DEBUG: html:', html, "\n");
+    // console.log('DEBUG: html:', html, "\n");
 
     //going throw snippets array and try to set text of html tag with this id
     //Two differentiations: Ids in snippet could have an additional information which text element should be exchanged.
@@ -68,9 +68,9 @@ module.exports = {
       if (snippets.ids[k].indexOf('-') === -1) { //first text node
         let counter = 0;
         $('body').find('#' + snippets.ids[k]).contents().each((index, element) => {
-          console.log('Found child of element with id', snippets.ids[k], element, "\n");
+          // console.log('Found child of element with id', snippets.ids[k], element, "\n");
           if (element.type === 'text' && counter === 0) {
-            console.log('Now setting text on', element.type, 'node, new text is: "', snippets.texts[k], '", old text was: "', element.data, "\"\n");
+            // console.log('Now setting text on', element.type, 'node, new text is: "', snippets.texts[k], '", old text was: "', element.data, "\"\n");
             element.data = snippets.texts[k];
             counter++;
           }
@@ -82,11 +82,11 @@ module.exports = {
         const target = parseInt(snippets.ids[k].substring(index+1, snippets.ids[k].length));
         console.log('Searching now node with multiple texts. target text node has the number', target, "\n");
         $('body').find('#' + snippets.ids[k].substring(0, index)).contents().each((index, element) => {
-          console.log('Found child of element with id', snippets.ids[k], element, "\n");
+          // console.log('Found child of element with id', snippets.ids[k], element, "\n");
           if (element.type === 'text') {
             counter++;
             if (counter === target) {
-              console.log('Now setting text on', element.type, 'node, new text is: "', snippets.texts[k], '", old text was: "', element.data, "\"\n");
+              // console.log('Now setting text on', element.type, 'node, new text is: "', snippets.texts[k], '", old text was: "', element.data, "\"\n");
               element.data = snippets.texts[k];
             }
           }
@@ -109,13 +109,13 @@ function filterTextSnippets(snippets) {
 }
 
 function getTextSnippets_rec(childs) {
-  console.log('getTextSnippets_rec got', childs.length, 'child(s)', "\n");
+  // console.log('getTextSnippets_rec got', childs.length, 'child(s)', "\n");
   switch (childs.length) {
     case 0:
       return [];
       break;
     case 1:
-      console.log('handle one child which type is', childs[0].type, "\n");
+      // console.log('handle one child which type is', childs[0].type, "\n");
       if (childs[0].type === 'text')
         return [{text: extractValue(childs[0]), id: getId($(childs[0]))}];
       return getTextSnippets_rec(childs.contents());
@@ -124,7 +124,7 @@ function getTextSnippets_rec(childs) {
       let result = [];
       // console.log('get child with another function:', $(childs[0]), $(childs[0]).attr('id'), "\n");
       childs.each((index, element) => {
-        console.log('recursive now with each - current child:', element, "\n");
+        // console.log('recursive now with each - current child:', element, "\n");
         if (element.children)
           result = result.concat(getTextSnippets_rec($(element.children)));
         else if (element.type === 'text')
@@ -156,7 +156,7 @@ function getId(node) {
     console.log('id', id, 'was new generated', "\n");
   }
 
-  console.log('Got id', id, 'of node with type', node[0].type, 'and id', node.attr('id'), 'and parents id', node.parent().attr('id'), "\n");
+  // console.log('Got id', id, 'of node with type', node[0].type, 'and id', node.attr('id'), 'and parents id', node.parent().attr('id'), "\n");
 
   return id;
 }
