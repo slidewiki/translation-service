@@ -1,6 +1,10 @@
 'use strict';
 
-const cheerio = require('cheerio');
+const cheerio = require('cheerio'),
+  REGEX_MASK_AFTER_TRANSLATION = /\:\s\d{3,12}\-?\d{0,5}\:\:\s/g,
+  REGEX_EMPTY_STRING = /\r?\n|\r|\t|-|\+/g;
+
+
 let $ = {};
 let identifier = 101;
 let existingIds = [];
@@ -19,7 +23,7 @@ module.exports = {
 
     //get existing ids
     $('[id]').map((index, element) => {
-      existingIds.push(parseInt($(element).attr('id')));
+      existingIds.push($(element).attr('id'));
       return $(element).attr('id');
     });
 
@@ -29,12 +33,14 @@ module.exports = {
     console.log('unfiltered snippets:', snippets, "\n");
     let filteredSnippets = filterTextSnippets(snippets);
     console.log('filtered snippets:', filteredSnippets, "\n");
+    let deduplicatedSnippets = checkAndHandleMultipleIdsInSNippets(filteredSnippets);
+    console.log('deduplicated snippets:', deduplicatedSnippets, "\n");
     // console.log('Did the html change?', $.root().html(), "\n");
 
     return {
       simpleText: extractValue($('body')),
       html: $('body').html(),
-      text: makeTextOutOfSnippets(filteredSnippets)
+      text: makeTextOutOfSnippets(deduplicatedSnippets)
     };
   },
 
@@ -53,20 +59,43 @@ module.exports = {
 
     console.log('DEBUG: html:', html, "\n");
 
+    //going throw snippets array and try to set text of html tag with this id
+    //Two differentiations: Ids in snippet could have an additional information which text element should be exchanged.
+    //   First case: one text per id - thus change only the first text node;
+    //   Second case: multiple text nodes per id - additional index is given for the number of the text node which should be edited
     let k = 0;
     for (k in snippets.ids) {
-      $('body').find('#' + snippets.ids[k]).contents().each((index, element) => {
-        console.log('Found child of element with id', snippets.ids[k], element, "\n");
-        if (element.type === 'text') {
-          console.log('Now setting text on', element.type, 'node, new text is: "', snippets.texts[k], '", old text was: "', element.data, "\"\n");
-          //$(element).text(snippets.texts[k]);
-          element.data = snippets.texts[k];
-        }
-      })
+      if (snippets.ids[k].indexOf('-') === -1) { //first text node
+        let counter = 0;
+        $('body').find('#' + snippets.ids[k]).contents().each((index, element) => {
+          console.log('Found child of element with id', snippets.ids[k], element, "\n");
+          if (element.type === 'text' && counter === 0) {
+            console.log('Now setting text on', element.type, 'node, new text is: "', snippets.texts[k], '", old text was: "', element.data, "\"\n");
+            element.data = snippets.texts[k];
+            counter++;
+          }
+        });
+      }
+      else { //not first text node
+        const index = snippets.ids[k].indexOf('-');
+        let counter = 0;
+        const target = parseInt(snippets.ids[k].substring(index+1, snippets.ids[k].length));
+        console.log('Searching now node with multiple texts. target text node has the number', target, "\n");
+        $('body').find('#' + snippets.ids[k].substring(0, index)).contents().each((index, element) => {
+          console.log('Found child of element with id', snippets.ids[k], element, "\n");
+          if (element.type === 'text') {
+            counter++;
+            if (counter === target) {
+              console.log('Now setting text on', element.type, 'node, new text is: "', snippets.texts[k], '", old text was: "', element.data, "\"\n");
+              element.data = snippets.texts[k];
+            }
+          }
+        });
+      }
     }
 
     let translatedHtml = $('body').html(); //TODO check if this works with unescaped html stuff
-    translatedHtml = translatedHtml.substring(14, translatedHtml.length - 6);
+    translatedHtml = translatedHtml.substring(14, translatedHtml.length - 6); //Remove added root div tag
     return translatedHtml;
   }
 };
@@ -76,7 +105,7 @@ module.exports = {
 function filterTextSnippets(snippets) {
   //TODO also filter Maths, Code, ...
   // console.log('snippets type is', Object.prototype.toString.call(snippets), "\n");
-  return snippets.filter(snippet => snippet.text.replace(/\r?\n|\r|\t|-|\+/g, '') !== '');
+  return snippets.filter(snippet => snippet.text.replace(REGEX_EMPTY_STRING, '') !== '');
 }
 
 function getTextSnippets_rec(childs) {
@@ -124,6 +153,7 @@ function getId(node) {
   if (!id) {
     id = generateNewId();
     node.parent().attr('id', id);
+    console.log('id', id, 'was new generated', "\n");
   }
 
   console.log('Got id', id, 'of node with type', node[0].type, 'and id', node.attr('id'), 'and parents id', node.parent().attr('id'), "\n");
@@ -131,8 +161,21 @@ function getId(node) {
   return id;
 }
 
-function checkAndHandleMultipleTextNodes(textNode) {
+function checkAndHandleMultipleIdsInSNippets(snippets) {
+  let ids = {};
+  return snippets.reduce((a, snippet) => {
+    if (ids[snippet.id]) {
+      ids[snippet.id]++;
+      snippet.id += '-' + ids[snippet.id];
+    }
+    else {
+      ids[snippet.id] = 1;
+    }
 
+    a.push(snippet);
+
+    return a;
+  }, []);
 }
 
 function generateNewId() {
@@ -144,16 +187,17 @@ function generateNewId() {
     identifier++;
   }
 
-  return id;
+  existingIds.push(id + '');
+  return id + '';
 }
 
 //-------- setTranslatedTextInHtml functions --------//
 
 function preparedTextToSnippets(text) {
-  let translatedTexts = text.split(/\:\s\d{3,12}\:\:\s/g);
+  let translatedTexts = text.split(REGEX_MASK_AFTER_TRANSLATION);
   translatedTexts.shift(); //first element is nulll thus should be removed
-  let ids = text.match(/\:\s\d{3,12}\:\:\s/g).reduce((a, id) => {
-    a.push(parseInt(id.substring(2, id.length - 3)));
+  let ids = text.match(REGEX_MASK_AFTER_TRANSLATION).reduce((a, id) => {
+    a.push(id.substring(2, id.length - 3)); //REGEX_MASK_AFTER_TRANSLATION defines the indexes
     return a;
   }, []);
 
