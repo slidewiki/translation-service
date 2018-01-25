@@ -28,8 +28,7 @@ const translatedText2 = `: 41477:: Titel des Jahres: 12874:: Paragraph des Monat
 dummytext
 <p id="12874">Paragraph of the <b>month</b> again</p>
 extra content`;
-const translatedText3 = `: 41477:: Titel des Jahres: 100:: dummytext: 12874:: Paragraph des: 101:: Monat: 100-2:: wieder: 100:: dummytext: 100-2::
-extra Inhalt`;
+const translatedText3 = `: 41477:: Titel des Jahres: 100:: dummytext: 12874:: Paragraph des: 101:: Monat: 12874-2:: wieder: 100-2:: extra Inhalt`;
 
   const html4 = `<div class="pptx2html" id="81669" style="position: relative; width: 960px; height: 720px; border-style: double; border-color: rgba(218, 102, 25, 0.5); transform: scale(1.13048, 1.13048); transform-origin: left top 0px;">
 <div id="76310"></div>
@@ -154,10 +153,7 @@ extra content`);
       //now use translated text to update html
       let translatedHtml = handler.setTranslatedTextInHtml(translatedText3, html);
 
-      expect(translatedHtml).to.equal(`<h1 id="41477">Titel des Jahres</h1>
-dummytext
-<p id="12874">Paragraph des <b id="100">Monat</b> again</p>
-extra Inhalt`);
+      expect(translatedHtml).to.equal(`<h1 id="41477">Titel des Jahres</h1>dummytext<p id="12874">Paragraph des<b id="101">Monat</b>wieder</p>extra Inhalt`);
     });
 
     // it('big html from slide  (slidewiki.aksw.org)', () => {
