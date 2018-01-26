@@ -1,36 +1,37 @@
+/*eslint quotes: "warn"*/
 'use strict';
 
 describe('Unit Tests - htmlHandler.js', () => {
 
-  let handler, expect, config;
+    let handler, expect, config;
 
-  beforeEach((done) => {
-    //Clean everything up before doing new tests
-    Object.keys(require.cache).forEach((key) => delete require.cache[key]);
-    require('chai').should();
-    let chai = require('chai');
-    let chaiAsPromised = require('chai-as-promised');
-    chai.use(chaiAsPromised);
-    expect = require('chai').expect;
-    handler = require('../controllers/htmlHandler.js');
-    config = require('../configuration.js');
-    done();
-  });
+    beforeEach((done) => {
+        //Clean everything up before doing new tests
+        Object.keys(require.cache).forEach((key) => delete require.cache[key]);
+        require('chai').should();
+        let chai = require('chai');
+        let chaiAsPromised = require('chai-as-promised');
+        chai.use(chaiAsPromised);
+        expect = require('chai').expect;
+        handler = require('../controllers/htmlHandler.js');
+        config = require('../configuration.js');
+        done();
+    });
 
-  const html1 = '<h1 id="41477">Title of the year</h1>';
-  const translatedText1 = ': 41477:: Titel des Jahres';
+    const html1 = '<h1 id="41477">Title of the year</h1>';
+    const translatedText1 = ': 41477:: Titel des Jahres';
 
-  const html2 = `<h1 id="41477">Title of the year</h1>
+    const html2 = `<h1 id="41477">Title of the year</h1>
 <p id="12874">Paragraph of the month</p>`;
-const translatedText2 = `: 41477:: Titel des Jahres: 12874:: Paragraph des Monats`;
+    const translatedText2 = `: 41477:: Titel des Jahres: 12874:: Paragraph des Monats`;
 
-  const html3 = `<h1 id="41477">Title of the year</h1>
+    const html3 = `<h1 id="41477">Title of the year</h1>
 dummytext
 <p id="12874">Paragraph of the <b>month</b> again</p>
 extra content`;
-const translatedText3 = `: 41477:: Titel des Jahres: 100:: dummytext: 12874:: Paragraph des: 101:: Monat: 12874-2:: wieder: 100-2:: extra Inhalt`;
+    const translatedText3 = `: 41477:: Titel des Jahres: 100:: dummytext: 12874:: Paragraph des: 101:: Monat: 12874-2:: wieder: 100-2:: extra Inhalt`;
 
-  const html4 = `<div class="pptx2html" id="81669" style="position: relative; width: 960px; height: 720px; border-style: double; border-color: rgba(218, 102, 25, 0.5); transform: scale(1.13048, 1.13048); transform-origin: left top 0px;">
+    const html4 = `<div class="pptx2html" id="81669" style="position: relative; width: 960px; height: 720px; border-style: double; border-color: rgba(218, 102, 25, 0.5); transform: scale(1.13048, 1.13048); transform-origin: left top 0px;">
 <div id="76310"></div>
 
 <div _id="6" _idx="4294967295" _name="Textplatzhalter 5" _type="undefined" class="block content v-up" id="53346" style="position: absolute; top: 95.4037px; left: 52.9132px; width: 859.087px; height: 547.763px; border: 1pt rgb(0, 0, 0); background-color: initial; z-index: 26728; cursor: auto;" tabindex="0">
@@ -111,72 +112,88 @@ const translatedText3 = `: 41477:: Titel des Jahres: 100:: dummytext: 12874:: Pa
 </div>
 </div>
 `;
-const translatedText4 = `: 27820:: Presentation of Models, which are used as part of the RE and design process,: 50573:: Usage of grafical models,: 89921:: Why?: 62932:: models of context: 95449:: Interaction models: 49812:: structural models: 99369:: models of whatever: 47708:: Concepts are awesome.: 80771:: Modelling of a system: 77370:: Targets: 48519:: (cc) : 51726:: All material provided on the SE9 website by Ian : 18535:: Sommerville: 52664:: http: 25872:: ://www.softwareengineering-9.com/`;
+    const translatedText4 = `: 27820:: Presentation of Models, which are used as part of the RE and design process,: 50573:: Usage of grafical models,: 89921:: Why?: 62932:: models of context: 95449:: Interaction models: 49812:: structural models: 99369:: models of whatever: 47708:: Concepts are awesome.: 80771:: Modelling of a system: 77370:: Targets: 48519:: (cc) : 51726:: All material provided on the SE9 website by Ian : 18535:: Sommerville: 52664:: http: 25872:: ://www.softwareengineering-9.com/`;
 
-  context('Basic html to text', () => {
-//     it('one title', () => {
-//       let {text, simpleText, html} = handler.htmlToText(html1);
-//
-//       console.log('New text:', text, "\n");
-//       console.log('New html:', html, "\n");
-//
-//       expect(simpleText).to.equal(`Title of the year`);
-//
-//       //now use translated text to update html
-//       let translatedHtml = handler.setTranslatedTextInHtml(translatedText1, html);
-//
-//       expect(translatedHtml).to.equal(`<h1 id="41477">Titel des Jahres</h1>`);
-//     });
-//     it('one title and a paragraph', () => {
-//       let {text, simpleText, html} = handler.htmlToText(html2);
-//
-//       console.log('New text:', text, "\n");
-//
-//       expect(simpleText).to.equal(`Title of the year
-// Paragraph of the month`);
-//
-//       //now use translated text to update html
-//       let translatedHtml = handler.setTranslatedTextInHtml(translatedText2, html);
-//
-//       expect(translatedHtml).to.equal(`<h1 id="41477">Titel des Jahres</h1>
-// <p id="12874">Paragraph des Monats</p>`);
-//     });
-//     it('one title and a paragraph with bold text and text in between', () => {
-//       let {text, simpleText, html} = handler.htmlToText(html3);
-//
-//       console.log('New text:', text, "\n");
-//
-//       expect(simpleText).to.equal(`Title of the year
-// dummytext
-// Paragraph of the month again
-// extra content`);
-//
-//       //now use translated text to update html
-//       let translatedHtml = handler.setTranslatedTextInHtml(translatedText3, html);
-//
-//       expect(translatedHtml).to.equal(`<h1 id="41477">Titel des Jahres</h1>dummytext<p id="12874">Paragraph des<b id="101">Monat</b>wieder</p>extra Inhalt`);
-//     });
+    context('Basic html to text', () => {
+        it('one title', () => {
+            let {
+                text,
+                simpleText,
+                html
+            } = handler.htmlToText(html1);
 
-    it('big html from slide  (slidewiki.aksw.org)', () => {
-      let {text, simpleText, html} = handler.htmlToText(html4);
+            console.log('New text:', text, "\n");
+            console.log('New html:', html, "\n");
 
-      console.log('New text:', text, "\n");
+            expect(simpleText).to.equal(`Title of the year`);
 
-      // expect(simpleText).to.equal(`Lernziele und Übersicht
-      //   Systemmodellierung
-      //   Vorstellung von Systemmodellen, die als Teil des RE und Entwurfsprozesses zum Einsatz kommen,
-      //   Einsatz grafischer Modelle zur Repräsentation von Softwaresystemen,
-      //   Warum sind unterschiedliche Modelltypen notwendig?
-      //   Kontextmodelle
-      //   Interaktionsmodelle
-      //   Strukturmodelle
-      //   Verhaltensmodelle
-      //   Konzepte auf denen die modellgetriebene Softwareentwicklung beruht, um beispielsweise ein System aus struktur- und verhaltensbasierten Modellen zu erzeugen.`);
+            //now use translated text to update html
+            let translatedHtml = handler.setTranslatedTextInHtml(translatedText1, html);
 
-      //now use translated text to update html
-      let translatedHtml = handler.setTranslatedTextInHtml(translatedText4, html);
+            expect(translatedHtml).to.equal(`<h1 id="41477">Titel des Jahres</h1>`);
+        });
+        it('one title and a paragraph', () => {
+            let {
+                text,
+                simpleText,
+                html
+            } = handler.htmlToText(html2);
 
-      expect(translatedHtml).to.equal(`<div class="pptx2html" id="81669" style="position: relative; width: 960px; height: 720px; border-style: double; border-color: rgba(218, 102, 25, 0.5); transform: scale(1.13048, 1.13048); transform-origin: left top 0px;">
+            console.log('New text:', text, "\n");
+
+            expect(simpleText).to.equal(`Title of the year
+Paragraph of the month`);
+
+            //now use translated text to update html
+            let translatedHtml = handler.setTranslatedTextInHtml(translatedText2, html);
+
+            expect(translatedHtml).to.equal(`<h1 id="41477">Titel des Jahres</h1>
+<p id="12874">Paragraph des Monats</p>`);
+        });
+        it('one title and a paragraph with bold text and text in between', () => {
+            let {
+                text,
+                simpleText,
+                html
+            } = handler.htmlToText(html3);
+
+            console.log('New text:', text, "\n");
+
+            expect(simpleText).to.equal(`Title of the year
+dummytext
+Paragraph of the month again
+extra content`);
+
+            //now use translated text to update html
+            let translatedHtml = handler.setTranslatedTextInHtml(translatedText3, html);
+
+            expect(translatedHtml).to.equal(`<h1 id="41477">Titel des Jahres</h1>dummytext<p id="12874">Paragraph des<b id="101">Monat</b>wieder</p>extra Inhalt`);
+        });
+
+        it('big html from slide  (slidewiki.aksw.org)', () => {
+            let {
+                text,
+                simpleText,
+                html
+            } = handler.htmlToText(html4);
+
+            console.log('New text:', text, "\n");
+
+            // expect(simpleText).to.equal(`Lernziele und Übersicht
+            //   Systemmodellierung
+            //   Vorstellung von Systemmodellen, die als Teil des RE und Entwurfsprozesses zum Einsatz kommen,
+            //   Einsatz grafischer Modelle zur Repräsentation von Softwaresystemen,
+            //   Warum sind unterschiedliche Modelltypen notwendig?
+            //   Kontextmodelle
+            //   Interaktionsmodelle
+            //   Strukturmodelle
+            //   Verhaltensmodelle
+            //   Konzepte auf denen die modellgetriebene Softwareentwicklung beruht, um beispielsweise ein System aus struktur- und verhaltensbasierten Modellen zu erzeugen.`);
+
+            //now use translated text to update html
+            let translatedHtml = handler.setTranslatedTextInHtml(translatedText4, html);
+
+            expect(translatedHtml).to.equal(`<div class="pptx2html" id="81669" style="position: relative; width: 960px; height: 720px; border-style: double; border-color: rgba(218, 102, 25, 0.5); transform: scale(1.13048, 1.13048); transform-origin: left top 0px;">
 <div id="76310"></div>
 
 <div _id="6" _idx="4294967295" _name="Textplatzhalter 5" _type="undefined" class="block content v-up" id="53346" style="position: absolute; top: 95.4037px; left: 52.9132px; width: 859.087px; height: 547.763px; border: 1pt rgb(0, 0, 0); background-color: initial; z-index: 26728; cursor: auto;" tabindex="0">
@@ -256,6 +273,6 @@ const translatedText4 = `: 27820:: Presentation of Models, which are used as par
 <div class="h-left" id="99720"><span class="text-block" id="48519" style="color: inherit; font-size: 10pt; font-family: Arial; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">(cc)&#xA0;</span><span class="text-block" id="51726" style="color: inherit; font-size: 10pt; font-family: Arial; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">All&#xA0;material provided on the SE9 website by Ian </span><span class="text-block" id="18535" style="color: inherit; font-size: 10pt; font-family: Arial; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">Sommerville</span><span class="text-block" id="39606" style="color: inherit; font-size: 10pt; font-family: Arial; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">&#xA0;- </span><span class="text-block" id="52664" style="color: inherit; font-size: 10pt; font-family: Arial; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">http</span><span class="text-block" id="25872" style="color: inherit; font-size: 10pt; font-family: Arial; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">://www.softwareengineering-9.com/</span></div>
 </div>
 </div>`);
+        });
     });
-  });
 });
