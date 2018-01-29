@@ -29,8 +29,7 @@ module.exports = {
             case 'deck' : db_linker = deckDB;
                 break;
         }
-        //console.log(request.payload.user);
-        db_linker.translate(encodeURIComponent(request.params.id), encodeURIComponent(request.payload.target), encodeURIComponent(request.payload.user)).then((translatedObject) => {
+        db_linker.translate(encodeURIComponent(request.params.id), encodeURIComponent(request.payload.target), encodeURIComponent(request.payload.user), encodeURIComponent(request.payload.jobId)).then((translatedObject) => {
             //if (err) console.log(err);
             if (co.isEmpty(translatedObject))
                 reply(boom.notFound());
@@ -51,7 +50,6 @@ module.exports = {
     getJobByNewId: function(request, reply) {
         jobDB.getJobByNewId(request.params.newId)
             .then((job) => {
-                console.log(job.progress);
                 reply(job);
             })
             .catch((err) => {

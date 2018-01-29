@@ -43,7 +43,7 @@ function addTagsBack(content, replace_array){
 
 }
 
-function handle_translation(original, target, user_id){
+function handle_translation(original, target, user_id, jobId = null){
     let translated = original;
     let sourceRevision = original.revisions[0];
 
@@ -94,6 +94,9 @@ function handle_translation(original, target, user_id){
                 console.log(err);
                 reject(err);
             } else {
+                if (jobId){
+                    console.log('deckDatabase.js jobId: ' + jobId);
+                }
                 resolve (translated);
             }
         });

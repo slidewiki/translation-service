@@ -22,6 +22,7 @@ module.exports = function(server) {
                 payload: {
                     target: Joi.string().min(5).max(5).required(),
                     user: Joi.number().integer(),
+                    jobId: Joi.number()
                 }
             },
             tags: ['api'],

@@ -11,6 +11,8 @@ let http = require('http');
 let translator = require('mstranslator');
 let async = require('async');
 
+let jobDB = require('./jobDatabase');
+
 // const client_id = 'slidewiki';
 // const client_secret = '3irwtY/+pq0e7+SXbldxU0vwMzH2NLfuIJ9eoOxSyjo=';
 
@@ -52,7 +54,7 @@ function addTagsBack(content, replace_array){
 
 }
 
-function handle_translation(original, target, user_id){
+function handle_translation(original, target, user_id, jobId = null){
     let translated = original;
     const sourceRevision = original.revisions[0];
 
@@ -127,7 +129,7 @@ function handle_translation(original, target, user_id){
                     }
                 });
             },
-            
+
         ], (err) => {
             if (err) {
                 console.log(err);
@@ -135,7 +137,19 @@ function handle_translation(original, target, user_id){
             } else {
                 translated.language = target;
                 translated.revisions[0].language = target;
-                resolve (translated);
+                if (jobId){
+                    jobDB.incProgressToJob(jobId).then((err, res) => {
+                        if (err) {
+                            console.log(err);
+                        }else{
+                            resolve (translated);
+                        }
+
+                    }).catch((err) => {console.log(err);});
+                }else{
+                    resolve (translated);
+                }
+
             }
         });
     });
@@ -146,7 +160,7 @@ function handle_translation(original, target, user_id){
 }
 
 module.exports = {
-    translate: function(id, target, user_id){
+    translate: function(id, target, user_id, jobId){
 
         let rp = require('request-promise-native');
         let myPromise = new Promise((resolve, reject) => {
@@ -167,7 +181,7 @@ module.exports = {
                     if (original.revisions.length > 1){ //there was no revision specified, translate the last revision
                         original.revisions = [original.revisions[original.revisions.length-1]];
                     }
-                    resolve(handle_translation(original,target,user_id));
+                    resolve(handle_translation(original,target,user_id, jobId));
                 }
             })
             .catch(function (e){
