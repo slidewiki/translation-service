@@ -78,7 +78,7 @@ module.exports = {
                 $('body').find('#' + snippets.ids[k]).contents().each((index, element) => {
                     // console.log('Found child of element with id', snippets.ids[k], element, "\n");
                     if (element.type === 'text' && counter === 0) {
-                        // console.log('Now setting text on', element.type, 'node, new text is: "', snippets.texts[k], '", old text was: "', element.data, "\"\n");
+                        console.log('Now setting text on', element.type, 'node, new text is: "', snippets.texts[k], '", old text was: "', element.data, "\"\n");
                         element.data = snippets.texts[k];
                         counter++;
                     }
@@ -110,9 +110,8 @@ module.exports = {
 //-------- htmlToText functions --------//
 
 function filterTextSnippets(snippets) {
-    //TODO also filter Maths, Code, ...
     // console.log('snippets type is', Object.prototype.toString.call(snippets), "\n");
-    return snippets.filter((snippet) => snippet.text.replace(REGEX_EMPTY_STRING, '') !== '');
+    return snippets.filter((snippet) => snippet !== undefined && snippet.text.replace(REGEX_EMPTY_STRING, '') !== '');
 }
 
 function getTextSnippets_rec(childs) {
@@ -122,21 +121,39 @@ function getTextSnippets_rec(childs) {
             return [];
             break;
         case 1:
-            // console.log('handle one child which type is', childs[0].type, "\n");
+            // console.log('handle one child which type is', childs[0].type, ', name is', childs[0].name, ' and attributes are', childs[0].attribs, "\n");
             if (childs[0].type === 'text')
                 return [{
                     text: extractValue(childs[0]),
                     id: getId($(childs[0]))
                 }];
-            return getTextSnippets_rec(childs.contents());
+            else if (childs[0].attribs && childs[0].attribs.class && (childs[0].attribs.class === 'math-tex' || childs[0].attribs.class.startsWith('language-') )) {
+                console.log('Skipping children because this element needs no translation - class:', childs[0].attribs.class, "\n");
+            }
+            else
+                return getTextSnippets_rec(childs.contents());
             break;
         default:
             let result = [];
             // console.log('get child with another function:', $(childs[0]), $(childs[0]).attr('id'), "\n");
+            //TODO also filter Maths, Code, ...
             childs.each((index, element) => {
-                // console.log('recursive now with each - current child:', element, "\n");
-                if (element.children)
-                    result = result.concat(getTextSnippets_rec($(element.children)));
+                let children = element.children;
+                try {
+                    children = element.children();
+                } catch (e) {
+
+                }
+                // console.log('recursive now with each - current child:', element.type, element.name, element.attribs, '', children);
+                if (children) {
+                    // console.log('getTextSnippets_rec: try get class attribute:', (element.attr) ? element.attr('class') : 'unknown', (element.attribs && element.attribs.class) ? element.attribs.class : 'unknown', "\n");
+
+                    if (element.attribs && element.attribs.class && (element.attribs.class === 'math-tex' || element.attribs.class.startsWith('language-') )) {
+                        console.log('Skipping children because this element needs no translation - class:', element.attribs.class, "\n");
+                    }
+                    else
+                        result = result.concat(getTextSnippets_rec($(children)));
+                }
                 else if (element.type === 'text')
                     result = result.concat([{
                         text: element.data,
