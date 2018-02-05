@@ -82,7 +82,7 @@ module.exports = {
                 $('body').find('#' + snippets.ids[k]).contents().each((index, element) => {
                     // console.log('Found child of element with id', snippets.ids[k], element, "\n");
                     if (element.type === 'text' && counter === 0) {
-                        console.log('Now setting text on', element.type, 'node, new text is: "', snippets.texts[k], '", old text was: "', element.data, "\"\n");
+                        // console.log('Now setting text on', element.type, 'node, new text is: "', snippets.texts[k], '", old text was: "', element.data, "\"\n");
                         element.data = snippets.texts[k];
                         counter++;
                     }
@@ -228,10 +228,13 @@ function generateNewId() {
 function preparedTextToSnippets(text) {
     let translatedTexts = text.split(REGEX_MASK_AFTER_TRANSLATION);
     translatedTexts.shift(); //first element is nulll thus should be removed
-    let ids = text.match(REGEX_MASK_AFTER_TRANSLATION).reduce((a, id) => {
-        a.push(id.substring(2, id.length - 3)); //REGEX_MASK_AFTER_TRANSLATION defines the indexes
-        return a;
-    }, []);
+    let matches = text.match(REGEX_MASK_AFTER_TRANSLATION);
+    let ids = [];
+    if (matches && matches.length > 0)
+        ids = text.match(REGEX_MASK_AFTER_TRANSLATION).reduce((a, id) => {
+            a.push(id.substring(2, id.length - 3)); //REGEX_MASK_AFTER_TRANSLATION defines the indexes
+            return a;
+        }, []);
 
     return {
         ids: ids,

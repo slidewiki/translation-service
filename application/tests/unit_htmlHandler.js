@@ -143,6 +143,98 @@ Text</div>
 
     const translatedText5 = `: 75726:: Text Text: 47481:: Text: 75726-2:: Text: 63577:: sadfsdff : 25264:: sdf ds sdf sdaf sfas`;
 
+    const html6 = `<div class="pptx2html" id="97844" style="position: relative; width: 1920px; height: 1080px; transform: scale(0.75736, 0.75736); transform-origin: left top 0px; border-style: double; border-color: rgba(218, 102, 25, 0.5);">
+<div _id="2" _idx="undefined" _name="Title 1" _type="title" class="block content v-mid h-mid ui-draggable ui-resizable context-menu-disabled" id="51873" style="position: absolute; top: 38.3334px; left: 66px; width: 828px; height: 139.167px; z-index: 23488; cursor: auto;" tabindex="0">
+<h3 id="67711">wfdedfsdf</h3>
+</div>
+
+<div _id="3" _idx="1" _name="Content Placeholder 2" _type="body" class="block content v-up ui-draggable ui-resizable context-menu-disabled" id="51237" style="position: absolute; top: 191.667px; left: 66px; width: 828px; height: 456.833px; z-index: 23520; cursor: auto;" tabindex="0">
+<ul id="39440">
+	<li id="18077">Text bullet 1</li>
+	<li id="75442">Text bullet 2</li>
+</ul>
+
+<div class="h-left" id="26039"></div>
+
+<div class="h-left" id="13761"></div>
+
+<div class="h-left" id="22340">hohohohoho this is my revange!</div>
+</div>
+
+<div class="ui-draggable ui-resizable context-menu-disabled" id="73403" style="position: absolute; top: 83.2547px; left: 1085px; z-index: 2147383647; cursor: auto;" tabindex="0"><img alt="box" id="63150" src="https://fileservice.experimental.slidewiki.org/picture/922857357087a1f5b555db956d9e7bd297ee21c697fcf0001c59a639441907fc.jpg" /></div>
+
+<div class="ui-draggable ui-resizable context-menu-disabled" id="92411" style="position: absolute; width: 400px; height: 400px; top: 387.268px; left: 63.4665px; z-index: 2147383647; cursor: auto;" tabindex="0">
+<pre id="69565">
+<code class="language-bash" id="16866">#!/bin/bash
+
+echo "dummy" &gt; /dfsf/dfdsf
+echo 'Tag'</code></pre>
+<span id="38093">&nbsp;</span>
+
+<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div>
+
+<div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div>
+
+<div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div>
+
+<div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div>
+
+<div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div>
+
+<div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div>
+
+<div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div>
+
+<div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div>
+</div>
+
+<div class="ui-draggable ui-resizable context-menu-disabled" id="55965" style="position: absolute; width: 400px; height: 400px; top: 250px; left: 200px; z-index: 2147383657; cursor: auto;" tabindex="0"><span id="24350">&nbsp;</span>
+
+<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div>
+
+<div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div>
+
+<div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div>
+
+<div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div>
+
+<div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div>
+
+<div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div>
+
+<div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div>
+
+<div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div>
+</div>
+
+<div class="ui-draggable ui-resizable context-menu-disabled" id="70242" style="position: absolute; width: 300px; height: 200px; top: 375.442px; left: 618.968px; z-index: 2147383647; cursor: auto;" tabindex="0"><span id="36793"><span class="math-tex" id="8090">\(x = {-b \pm \sqrt{b^2-4ac} \over 2a}\)</span>&nbsp;</span></div>
+
+<div class="ui-draggable ui-resizable context-menu-disabled" id="35424" style="position: absolute; width: 400px; height: 300px; top: 656.063px; left: 60.3994px; z-index: 2147383647; cursor: auto;" tabindex="0">
+<table border="1" cellpadding="1" cellspacing="1" id="24285" style="width:500px;">
+	<caption id="38405">Monat</caption>
+	<tbody id="5277">
+		<tr id="58260">
+			<td id="68998">Baum</td>
+			<td id="29503">Wiese</td>
+		</tr>
+		<tr id="57296">
+			<td id="81919">Vogel</td>
+			<td id="22111"></td>
+		</tr>
+		<tr id="74328">
+			<td id="12027"></td>
+			<td id="26814">Eis</td>
+		</tr>
+	</tbody>
+</table>
+<span id="32055">&nbsp;</span></div>
+
+<div class="ui-draggable ui-resizable context-menu-disabled" id="83490" style="position: absolute; top: 100px; left: 100px; width: 400px; height: 300px; z-index: 2147383667; cursor: auto;" tabindex="0"><iframe allow="encrypted-media" frameborder="0" height="300" id="54604" src="https://www.youtube.com/watch?v=coHIfWcwm60" width="400"></iframe></div>
+</div>
+`;
+
+    const translatedText6 = `: 67711:: wfdedfsdf: 18077:: Text bullet 1: 75442:: Text bullet 2: 22340:: hohohohoho Dies ist meine Rache!: 38405:: Monat2: 68998:: Baum2: 29503:: Wiese2: 81919:: Vogel2: 26814:: Eis2`;
+
     context('Basic html to text', () => {
         it('one title', () => {
             let {
@@ -320,7 +412,7 @@ extra content`);
 // sdf ds sdf sdaf sfas`);
 
             //now use translated text to update html
-            let translatedHtml = handler.setTranslatedTextInHtml(translatedText4, html);
+            let translatedHtml = handler.setTranslatedTextInHtml(translatedText5, html);
 
             expect(translatedHtml).to.equal(`<div id="44288"><span class="math-tex" id="4204">\(x = {-b \pm \sqrt{b^2-4ac} \over 2a}\)</span>
 <pre id="39741"><code class="language-javascript" id="95541">let test = true;
@@ -338,14 +430,117 @@ if (true === true)
 <div id="40553"></div>
 </div>
 
-<div id="75726">Text Text<strong id="47481">Text</strong>
-Text</div>
+<div id="75726">Text Text<strong id="47481">Text</strong>Text</div>
 
 <div id="63577">sadfsdff&#xA0;</div>
 
 <div id="61168"></div>
 
 <div id="25264">sdf ds sdf sdaf sfas</div>`);
+        });
+
+        it('With everything', () => {
+            let {
+                text,
+                simpleText,
+                html
+            } = handler.htmlToText(html6);
+
+            console.log('New text:', text, "\n");
+
+//             expect(simpleText).to.equal(``);
+
+            //now use translated text to update html
+            let translatedHtml = handler.setTranslatedTextInHtml(translatedText6, html);
+
+            expect(translatedHtml).to.equal(`<div class="pptx2html" id="97844" style="position: relative; width: 1920px; height: 1080px; transform: scale(0.75736, 0.75736); transform-origin: left top 0px; border-style: double; border-color: rgba(218, 102, 25, 0.5);">
+<div _id="2" _idx="undefined" _name="Title 1" _type="title" class="block content v-mid h-mid ui-draggable ui-resizable context-menu-disabled" id="51873" style="position: absolute; top: 38.3334px; left: 66px; width: 828px; height: 139.167px; z-index: 23488; cursor: auto;" tabindex="0">
+<h3 id="67711">wfdedfsdf</h3>
+</div>
+
+<div _id="3" _idx="1" _name="Content Placeholder 2" _type="body" class="block content v-up ui-draggable ui-resizable context-menu-disabled" id="51237" style="position: absolute; top: 191.667px; left: 66px; width: 828px; height: 456.833px; z-index: 23520; cursor: auto;" tabindex="0">
+<ul id="39440">
+	<li id="18077">Text bullet 1</li>
+	<li id="75442">Text bullet 2</li>
+</ul>
+
+<div class="h-left" id="26039"></div>
+
+<div class="h-left" id="13761"></div>
+
+<div class="h-left" id="22340">hohohohoho Dies ist meine Rache!</div>
+</div>
+
+<div class="ui-draggable ui-resizable context-menu-disabled" id="73403" style="position: absolute; top: 83.2547px; left: 1085px; z-index: 2147383647; cursor: auto;" tabindex="0"><img alt="box" id="63150" src="https://fileservice.experimental.slidewiki.org/picture/922857357087a1f5b555db956d9e7bd297ee21c697fcf0001c59a639441907fc.jpg"></div>
+
+<div class="ui-draggable ui-resizable context-menu-disabled" id="92411" style="position: absolute; width: 400px; height: 400px; top: 387.268px; left: 63.4665px; z-index: 2147383647; cursor: auto;" tabindex="0">
+<pre id="69565"><code class="language-bash" id="16866">#!/bin/bash
+
+echo &quot;dummy&quot; &gt; /dfsf/dfdsf
+echo &apos;Tag&apos;</code></pre>
+<span id="38093">&#xA0;</span>
+
+<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div>
+
+<div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div>
+
+<div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div>
+
+<div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div>
+
+<div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div>
+
+<div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div>
+
+<div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div>
+
+<div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div>
+</div>
+
+<div class="ui-draggable ui-resizable context-menu-disabled" id="55965" style="position: absolute; width: 400px; height: 400px; top: 250px; left: 200px; z-index: 2147383657; cursor: auto;" tabindex="0"><span id="24350">&#xA0;</span>
+
+<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div>
+
+<div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div>
+
+<div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div>
+
+<div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div>
+
+<div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div>
+
+<div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div>
+
+<div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div>
+
+<div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div>
+</div>
+
+<div class="ui-draggable ui-resizable context-menu-disabled" id="70242" style="position: absolute; width: 300px; height: 200px; top: 375.442px; left: 618.968px; z-index: 2147383647; cursor: auto;" tabindex="0"><span id="36793"><span class="math-tex" id="8090">\(x = {-b \pm \sqrt{b^2-4ac} \over 2a}\)</span>&#xA0;</span></div>
+
+<div class="ui-draggable ui-resizable context-menu-disabled" id="35424" style="position: absolute; width: 400px; height: 300px; top: 656.063px; left: 60.3994px; z-index: 2147383647; cursor: auto;" tabindex="0">
+<table border="1" cellpadding="1" cellspacing="1" id="24285" style="width:500px;">
+	<caption id="38405">Monat2</caption>
+	<tbody id="5277">
+		<tr id="58260">
+			<td id="68998">Baum2</td>
+			<td id="29503">Wiese2</td>
+		</tr>
+		<tr id="57296">
+			<td id="81919">Vogel2</td>
+			<td id="22111"></td>
+		</tr>
+		<tr id="74328">
+			<td id="12027"></td>
+			<td id="26814">Eis2</td>
+		</tr>
+	</tbody>
+</table>
+<span id="32055">&#xA0;</span></div>
+
+<div class="ui-draggable ui-resizable context-menu-disabled" id="83490" style="position: absolute; top: 100px; left: 100px; width: 400px; height: 300px; z-index: 2147383667; cursor: auto;" tabindex="0"><iframe allow="encrypted-media" frameborder="0" height="300" id="54604" src="https://www.youtube.com/watch?v=coHIfWcwm60" width="400"></iframe></div>
+</div>
+`);
         });
     });
 });
