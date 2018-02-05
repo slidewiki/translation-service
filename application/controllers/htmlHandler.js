@@ -16,12 +16,16 @@ module.exports = {
        a basic text extraction (simpleText),
        a modified html version (html) and
        a text which contains a map of string to identifier (text - string representation) <- should be used for translation API
+
+		Attention:
+		   Text with special characters (like code) could be modified even if they will not be translated. E.g.: ' -> &apos;   or   &nbsp; -> &#xA0;
     */
     htmlToText: (html) => {
         $ = cheerio.load('<div id="100">' + html + '</div>', {
             normalizeWhitespace: false,
             recognizeSelfClosing: true,
-            withDomLvl1: false
+            withDomLvl1: false,
+            decodeEntities: true
         });
 
         // console.log('root node:', $.root(), "\n");
@@ -136,7 +140,6 @@ function getTextSnippets_rec(childs) {
         default:
             let result = [];
             // console.log('get child with another function:', $(childs[0]), $(childs[0]).attr('id'), "\n");
-            //TODO also filter Maths, Code, ...
             childs.each((index, element) => {
                 let children = element.children;
                 try {

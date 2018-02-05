@@ -327,7 +327,7 @@ extra content`);
 var i = 0;
 boolean true = true
 if (true === true)
-{alert('test');}
+{alert(&apos;test&apos;);}
 </code></pre>
 
 <pre id="60974"><code class="language-html" id="46542">&lt;b&gt;uiniz 78nz87n8&lt;/b&gt;
@@ -341,7 +341,7 @@ if (true === true)
 <div id="75726">Text Text<strong id="47481">Text</strong>
 Text</div>
 
-<div id="63577">sadfsdff&nbsp;</div>
+<div id="63577">sadfsdff&#xA0;</div>
 
 <div id="61168"></div>
 
