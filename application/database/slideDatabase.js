@@ -137,7 +137,7 @@ function handle_translation(original, target, user_id, jobId = null){
             } else {
                 translated.language = target;
                 translated.revisions[0].language = target;
-                if (jobId){
+                if (jobId > 0){
                     jobDB.incProgressToJob(jobId).then((err, res) => {
                         if (err) {
                             console.log(err);
