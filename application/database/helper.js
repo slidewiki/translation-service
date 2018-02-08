@@ -6,30 +6,12 @@ const Db = require('mongodb').Db,
     config = require('../configuration.js').MongoDB,
     co = require('../common');
 
-let async = require('async');
-
 let dbConnection = undefined;
 let incrementationSettings = {
     collection: 'counters',
     field: '_id',
     step: 1
 };
-
-function uniq(a) { //returns an array of unique values
-    var prims = {'boolean':{}, 'number':{}, 'string':{}}, objs = [];
-
-    return a.filter(function(item) {
-        if (item){
-            var type = typeof item;
-            if(type in prims)
-                return prims[type].hasOwnProperty(item) ? false : (prims[type][item] = true);
-            else
-            return objs.indexOf(item) >= 0 ? false : objs.push(item);
-        }else{
-            return false;
-        }
-    });
-}
 
 function testDbName(name) {
     return typeof name !== 'undefined' ? name : config.SLIDEWIKIDATABASE;
@@ -92,61 +74,7 @@ function getNextId(db, collectionName, fieldName) {
     return myPromise;
 }
 
-//
-// let translator = require('mstranslator');
-//
-// let client = new translator({
-//     // client_id: client_id, // use this for the old token API
-//     // client_secret: client_secret // use this for the old token API
-//     api_key: '77e543f1cd854a8dae6ba7dd1ce1d1b9' //TODO need a better way to store this...
-//
-// }, true);
-
-let client = require('./mockup_translation');
-
-
-let languagesAndNames = [];
-
 module.exports = {
-    client: client,
-    languagesAndNames: languagesAndNames,
-
-    getLanguagesAndNames: function(callback) {
-        if (module.exports.languagesAndNames.length){
-            callback(null, module.exports.languagesAndNames);
-        }else{
-            let result = [];
-            client.getLanguagesForTranslate((err, codes) => {
-                if (err) {
-                    console.log(err);
-                }
-                let filtered = codes.map((code) => { //removing 'complex' languages
-                    if (code.length >2){
-                        let splitted = code.split('-')[0];
-                        if (splitted.length === 2) return splitted;
-                        else return ;
-                    }else{
-                        return code;
-                    }
-                });
-                let unigue = uniq(filtered); //removing duplicates which appeared after simplifying the languages
-                let params = {locale:'en', languageCodes: unigue};
-                client.getLanguageNames(params, (err, names) => {
-                    async.eachOf(codes, (value, key, cbEach) => {
-                        if (unigue[key]){
-                            result.push({'name': names[key], 'code': unigue[key]});
-                            cbEach();
-                        }else{
-                            cbEach();
-                        }
-                    }, (err) => {
-                        module.exports.languagesAndNames = result;
-                        callback(err, result);
-                    });
-                });
-            });
-        }
-    },
     createDatabase: function (dbname) {
         dbname = testDbName(dbname);
 

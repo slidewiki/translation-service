@@ -1,47 +1,8 @@
-/*
-Controller for handling mongodb and the data model slide while providing CRUD'ish.
-*/
-
 'use strict';
 
-const helper = require('./helper'),
-    deckModel = require('../models/deck.js'),
-    Microservices = require('../configs/microservices');
-    /*
-    Controller for handling mongodb and the data model deck while providing CRUD'ish.
-    */
-let http = require('http');
-let translator = require('mstranslator');
-let async = require('async');
-
-
-// let client = new translator({
-//     // client_id: client_id, // use this for the old token API
-//     // client_secret: client_secret // use this for the old token API
-//     api_key: '77e543f1cd854a8dae6ba7dd1ce1d1b9' //TODO need a better way to store this...
-//
-// }, true);
-let client = require('./mockup_translation');
-
-function translateLine(line, source, target, callback){
-    let params = {
-        text: line,
-        from: source,
-        to: target,
-        contentType: 'text/html'
-    };
-    client.translate(params, (err, data) => {
-        callback(err, data);
-    });
-}
-
-function filterTags(content){
-
-}
-
-function addTagsBack(content, replace_array){
-
-}
+const async = require('async');
+const translationImpl = require('../services/mstranslator');
+const Microservices = require('../configs/microservices');
 
 function handle_translation(original, target, user_id, jobId = null){
     let translated = original;
@@ -68,7 +29,7 @@ function handle_translation(original, target, user_id, jobId = null){
     let myPromise = new Promise((resolve, reject) => {
         async.series([
             (cbAsync) => {
-                translateLine(translated.revisions[0].title, source, target_code, (err, new_line) => {
+                translationImpl.translateLine(translated.revisions[0].title, source, target_code, (err, new_line) => {
                     if (err) cbAsync(err);
                     else {
                         translated.revisions[0].title = new_line;
@@ -80,7 +41,7 @@ function handle_translation(original, target, user_id, jobId = null){
                 //let replace_array = array();
                 //let content = original.revisions[0].content;
                 //replace_array = filterTags(content);
-                translateLine(original.description, source, target_code, (err, new_line) => {
+                translationImpl.translateLine(original.description, source, target_code, (err, new_line) => {
                     if (err) cbAsync(err);
                     else {
                         //translated.revisions[0].content = addTagsBack(new_line, replace_array);
@@ -111,7 +72,7 @@ module.exports = {
         let rp = require('request-promise-native');
         let myPromise = new Promise((resolve, reject) => {
 
-            var options = {
+            let options = {
                 uri: Microservices.deck.uri+'/deck/'+id,
                 headers : {
                     'Content-Type': 'application/json',
@@ -139,4 +100,5 @@ module.exports = {
         return myPromise;
 
     },
+
 };

@@ -25,7 +25,6 @@
     "stop:mongodb": "docker stop mongotest && docker rm mongotest"
   },
   "dependencies": {
-    "ajv": "^4.5.0",
     "boom": "^4.0.0",
     "database-cleaner": "^1.1.0",
     "good": "^7.0.2",
