@@ -38,31 +38,28 @@ function getNextId(db, collectionName, fieldName) {
     const fieldNameCorrected = fieldName || incrementationSettings.field;
     const step = incrementationSettings.step;
 
-    let myPromise = new Promise(function (resolve, reject) {
+    let myPromise = new Promise((resolve, reject) => {
         return db.collection(incrementationSettings.collection).findAndModify({
             _id: collectionName,
             field: fieldNameCorrected
         },
         null, //no sort
-            {
-                $inc: {
-                    seq: step
-                }
-            },
-            {
-                upsert: true, //if there is a problem with _id insert will fail
-                new: true //insert returns the updated document
-            })
-        .then((result) => {
-            console.log('getNextId: returned result', result);
+        {
+            $inc: {
+                seq: step
+            }
+        }, {
+            upsert: true, //if there is a problem with _id insert will fail
+            new: true //insert returns the updated document
+        }).then((result) => {
+            //console.log('getNextId: returned result', result);
             if (result.value && result.value.seq) {
                 resolve(result.value.seq);
             } else {
                 resolve(result.seq);
             }
-        })
-        .catch((error) => {
-            console.log('getNextId: ERROR', error);
+        }).catch((error) => {
+            //console.log('getNextId: ERROR', error);
             if (error.code === 11000) {
                 //no distinct seq
                 reject(error);
@@ -76,21 +73,21 @@ function getNextId(db, collectionName, fieldName) {
 }
 
 module.exports = {
+    /* eslint-disable promise/catch-or-return, no-unused-vars*/
     createDatabase: function (dbname) {
         dbname = testDbName(dbname);
-
-        let myPromise = new Promise(function (resolve, reject) {
+        let myPromise = new Promise((resolve, reject) => {
             let db = new Db(dbname, new Server(config.HOST, config.PORT));
-            const connection = db.open()
-            .then((connection) => {
+            db.open().then((connection) => {
                 connection.collection('test').insertOne({ //insert the first object to know that the database is properly created TODO this is not real test....could fail without your knowledge
                     id: 1,
                     data: {}
-                }, (data) => {
+                }, () => {
                     resolve(connection);
                 });
             });
         });
+        /* eslint-enable promise/catch-or-return, no-unused-vars */
 
         return myPromise;
     },
@@ -98,8 +95,7 @@ module.exports = {
     cleanDatabase: function (dbname) {
         dbname = testDbName(dbname);
 
-        return this.connectToDatabase(dbname)
-        .then((db) => {
+        return this.connectToDatabase(dbname).then((db) => {
             const DatabaseCleaner = require('database-cleaner');
             const databaseCleaner = new DatabaseCleaner('mongodb');
             return new Promise((resolve) => databaseCleaner.clean(db, resolve));
@@ -111,20 +107,22 @@ module.exports = {
     connectToDatabase: function (dbname) {
         dbname = testDbName(dbname);
 
-        if (testConnection(dbname))
+        if (testConnection(dbname)) {
             return Promise.resolve(dbConnection);
-        else
-        return MongoClient.connect('mongodb://' + config.HOST + ':' + config.PORT + '/' + dbname)
-        .then((db) => {
-            if (db.s.databaseName !== dbname)
-                throw new 'Wrong Database!';
-            dbConnection = db;
-            return db;
-        });
+        } else {
+            return MongoClient.connect('mongodb://' + config.HOST + ':' + config.PORT + '/' + dbname)
+                .then((db) => {
+                    if (db.s.databaseName !== dbname)
+                        throw new 'Wrong Database!';
+                    dbConnection = db;
+                    return db;
+                });
+        }
 
     },
 
     getNextIncrementationValueForCollection: function (dbconn, collectionName, fieldName) {
         return getNextId(dbconn, collectionName, fieldName);
-    }
+    },
+
 };

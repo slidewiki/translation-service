@@ -5,14 +5,14 @@ const Microservices = require('../configs/microservices');
 
 module.exports = {
 
-  	// promises deck/slide data
-  	fetchContentItem: function(kind, id) {
+    // promises deck/slide data
+    fetchContentItem: function(kind, id) {
 
-  		return rp.get({
-  			uri: `${Microservices.deck.uri}/${kind}/${id}`,
-  			json: true,
-  		});
+        return rp.get({
+            uri: `${Microservices.deck.uri}/${kind}/${id}`,
+            json: true,
+        });
 
-  	},
+    },
 
 };

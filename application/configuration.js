@@ -1,37 +1,44 @@
 /* This module is used for configuring the service */
 'use strict';
 
-//read mongodb URL from /etc/hosts
+const co = require('./common');
+
 let host = 'localhost';
+//read mongo URL from /etc/hosts
 const fs = require('fs');
 try {
     const lines = fs.readFileSync('/etc/hosts').toString().split('\n');
-    for (let i in lines) {
-        if (lines[i].includes('mongodb')) {
-            const entrys = lines[i].split(' ');
-            host = entrys[entrys.length - 1];
-            console.log('Found mongodb host. Using ' + host + ' as database host.');
-        }
-    }
+    lines.filter((line) => line.includes('mongodb')).forEach((line) => {
+        const entries = line.split(' ');
+        host = entries[entries.length - 1];
+        console.log('Using ' + host + ' as database host.');
+    });
 } catch (e) {
-    //Windows or no read rights (bad)
+    console.log('Exception: Windows or no read rights to read /etc/hosts (bad)');
 }
+//read mongo URL from ENV
+host = (!co.isEmpty(process.env.DATABASE_URL)) ? process.env.DATABASE_URL : host;
+if (host !== 'localhost')
+    console.log('Using ' + host + ' as database host.');
 
-//read mongo port from ENV
-const co = require('./common');
 let port = 27017;
+//read mongo port from ENV
 if (!co.isEmpty(process.env.DATABASE_PORT)){
     port = process.env.DATABASE_PORT;
-    //console.log('Using port ' + port + ' as database port.'); TODO replace it with logging, that isn't printed at npm run test:unit
+    console.log('Using ' + port + ' as database port.');
+}
+
+let slidewikiDbName = 'slidewiki';
+if (process.env.NODE_ENV === 'test') {
+    slidewikiDbName = 'slidewiki_test';
 }
 
 module.exports = {
-
     MongoDB: {
         PORT: port,
         HOST: host,
         NS: 'local',
-        SLIDEWIKIDATABASE: 'slidewiki'
+        SLIDEWIKIDATABASE: slidewikiDbName
     },
 
     mockTranslation: true,
