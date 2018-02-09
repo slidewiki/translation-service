@@ -2,8 +2,7 @@
 
 const helper = require('./helper');
 
-let self = module.exports = {
-
+module.exports = {
 
     getJobByNewId: (newId) => {
 

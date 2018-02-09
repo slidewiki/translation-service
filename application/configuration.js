@@ -1,4 +1,4 @@
-/* This module is used for confugrating the mongodb connection*/
+/* This module is used for configuring the service */
 'use strict';
 
 //read mongodb URL from /etc/hosts
@@ -26,10 +26,16 @@ if (!co.isEmpty(process.env.DATABASE_PORT)){
 }
 
 module.exports = {
+
     MongoDB: {
         PORT: port,
         HOST: host,
         NS: 'local',
         SLIDEWIKIDATABASE: 'slidewiki'
-    }
+    },
+
+    mockTranslation: true,
+
+    mstranslatorApiKey: '77e543f1cd854a8dae6ba7dd1ce1d1b9',
+
 };

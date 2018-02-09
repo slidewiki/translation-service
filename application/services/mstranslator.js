@@ -1,5 +1,9 @@
 'use strict';
 
+const async = require('async');
+const translator = require('mstranslator');
+const { mstranslatorApiKey, mockTranslation } = require('../configuration');
+
 // a mockup tranlsator
 let mockClient = {
 
@@ -20,18 +24,14 @@ let mockClient = {
     }
 };
 
-const async = require('async');
-const translator = require('mstranslator');
-
-let msClient = new translator({
-    // client_id: client_id, // use this for the old token API
-    // client_secret: client_secret // use this for the old token API
-    api_key: '77e543f1cd854a8dae6ba7dd1ce1d1b9' //TODO need a better way to store this...
-
-}, true);
-
-// TODO make this configurable
-let client = mockClient;
+let client;
+if (mockTranslation) {
+    client = mockClient;
+} else {
+    client = new translator({
+        api_key: mstranslatorApiKey,
+    }, true);
+}
 
 let languagesAndNames = [];
 
@@ -101,7 +101,7 @@ let service = module.exports = {
 function uniq(a) { //returns an array of unique values
     let prims = {'boolean':{}, 'number':{}, 'string':{}}, objs = [];
 
-    return a.filter(function(item) {
+    return a.filter((item) => {
         if (item){
             let type = typeof item;
             if(type in prims)

@@ -2,7 +2,7 @@
 
 const async = require('async');
 const translationImpl = require('../services/mstranslator');
-const Microservices = require('../configs/microservices');
+const deckService = require('../services/deck');
 
 function handle_translation(original, target, user_id, jobId = null){
     let translated = original;
@@ -67,38 +67,19 @@ function handle_translation(original, target, user_id, jobId = null){
 }
 
 module.exports = {
+
     translate: function(id, target, user_id){
-
-        let rp = require('request-promise-native');
-        let myPromise = new Promise((resolve, reject) => {
-
-            let options = {
-                uri: Microservices.deck.uri+'/deck/'+id,
-                headers : {
-                    'Content-Type': 'application/json',
-                    'Cache-Control': 'no-cache'
-                },
-                json: true
-            };
-            rp(options).then(function (original){
-                if (original.error){
-                    //console.log(original);
-                    resolve({});
-                }else{
-                    console.log(original.revisions);
-                    if (original.revisions.length > 1){ //there was no revision specified, translate the last revision
-                        original.revisions = [original.revisions[original.revisions.length-1]];
-                    }
-                    resolve(handle_translation(original,target,user_id));
+        return deckService.fetchContentItem('deck', id).then((original) => {
+            if (original.error){
+                //console.log(original);
+                return {};
+            }else{
+                if (original.revisions.length > 1){ //there was no revision specified, translate the last revision
+                    original.revisions = [original.revisions[original.revisions.length-1]];
                 }
-            })
-            .catch(function (e){
-                console.log('problem with request deck: ' + e.message);
-                reject(e);
-            });
+                return handle_translation(original,target,user_id);
+            }
         });
-        return myPromise;
-
     },
 
 };
