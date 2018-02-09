@@ -45,9 +45,13 @@ module.exports = function(server) {
         path: '/jobByNewId/{newId}',
         handler: handlers.getJobByNewId,
         config: {
-            tags: ['api']
-        }
-
+            validate: {
+                params: {
+                    newId: Joi.number().integer(),
+                },
+            },
+            tags: ['api'],
+        },
     });
 
 };

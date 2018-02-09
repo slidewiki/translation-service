@@ -33,22 +33,23 @@ module.exports = {
                 reply(boom.notFound());
             else
                 reply(translatedObject);
-        }).catch((error) => {
-            console.log('error', error);
+        }).catch((err) => {
+            request.log('error', err);
             reply(boom.badImplementation());
         });
     },
 
     getJobByNewId: function(request, reply) {
-        jobDB.getJobByNewId(request.params.newId)
-            .then((job) => {
-                reply(job);
-            })
-            .catch((err) => {
-                console.log('error', err);
+        jobDB.getJobByNewId(request.params.newId).then((job) => {
+            if (!job) {
                 reply(boom.notFound());
-            }            );
-
-    }
+            } else {
+                reply(job);
+            }
+        }).catch((err) => {
+            request.log('error', err);
+            reply(boom.notFound());
+        });
+    },
 
 };
