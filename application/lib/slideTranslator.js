@@ -3,9 +3,8 @@
 const async = require('async');
 const translationImpl = require('../services/mstranslator');
 const deckService = require('../services/deck');
-const jobDB = require('../database/jobDatabase');
 
-function handle_translation(original, target, user_id, jobId = null){
+function handle_translation(original, target, user_id){
     let translated = original;
     const sourceRevision = original.revisions[0];
 
@@ -88,19 +87,7 @@ function handle_translation(original, target, user_id, jobId = null){
             } else {
                 translated.language = target;
                 translated.revisions[0].language = target;
-                if (jobId > 0){
-                    jobDB.incProgressToJob(jobId).then((err) => {
-                        if (err) {
-                            console.log(err);
-                        }else{
-                            resolve (translated);
-                        }
-
-                    }).catch((err) => {console.log(err);});
-                }else{
-                    resolve (translated);
-                }
-
+                resolve (translated);
             }
         });
     });
@@ -112,7 +99,7 @@ function handle_translation(original, target, user_id, jobId = null){
 
 module.exports = {
 
-    translate: function(id, target, user_id, jobId){
+    translate: function(id, target, user_id){
         return deckService.fetchContentItem('slide', id).then((original) => {
             if (original.error){
                 //console.log(original);
@@ -121,7 +108,7 @@ module.exports = {
                 if (original.revisions.length > 1){ //there was no revision specified, translate the last revision
                     original.revisions = [original.revisions[original.revisions.length-1]];
                 }
-                return handle_translation(original,target,user_id, jobId);
+                return handle_translation(original,target,user_id);
             }
         });
 

@@ -9,7 +9,11 @@ let mockClient = {
 
     translate: (params, callback) => {
         let result = 'Lorem Ipsum';
-        callback(null, result);
+
+        // add some delay for debugging / testing purposes
+        setTimeout(() => {
+            callback(null, result);
+        }, 1000);
     },
 
     getLanguagesForTranslate: (callback) => {

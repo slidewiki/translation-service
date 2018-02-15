@@ -22,7 +22,6 @@ module.exports = function(server) {
                 payload: {
                     target: Joi.string().min(5).max(5).required(),
                     user: Joi.number().integer(),
-                    jobId: Joi.number()
                 }
             },
             tags: ['api'],
@@ -38,20 +37,6 @@ module.exports = function(server) {
             tags: ['api']
         }
 
-    });
-
-    server.route({
-        method: 'GET',
-        path: '/jobByNewId/{newId}',
-        handler: handlers.getJobByNewId,
-        config: {
-            validate: {
-                params: {
-                    newId: Joi.number().integer(),
-                },
-            },
-            tags: ['api'],
-        },
     });
 
 };

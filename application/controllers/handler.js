@@ -3,7 +3,6 @@
 'use strict';
 
 const boom = require('boom'), //Boom gives us some predefined http codes and proper responses
-    jobDB = require('../database/jobDatabase'),
     slideTranslator = require('../lib/slideTranslator'),
     deckTranslator = require('../lib/deckTranslator'),
     translationImpl = require('../services/mstranslator'),
@@ -27,7 +26,7 @@ module.exports = {
         }
 
         //console.log(request.payload.user);
-        translator.translate(request.params.id, request.payload.target, request.payload.user, request.payload.jobId).then((translatedObject) => {
+        translator.translate(request.params.id, request.payload.target, request.payload.user).then((translatedObject) => {
             //if (err) console.log(err);
             if (co.isEmpty(translatedObject))
                 reply(boom.notFound());
@@ -36,19 +35,6 @@ module.exports = {
         }).catch((err) => {
             request.log('error', err);
             reply(boom.badImplementation());
-        });
-    },
-
-    getJobByNewId: function(request, reply) {
-        jobDB.getJobByNewId(request.params.newId).then((job) => {
-            if (!job) {
-                reply(boom.notFound());
-            } else {
-                reply(job);
-            }
-        }).catch((err) => {
-            request.log('error', err);
-            reply(boom.notFound());
         });
     },
 
