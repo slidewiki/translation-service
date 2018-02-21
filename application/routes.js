@@ -24,6 +24,11 @@ module.exports = function(server) {
                     user: Joi.number().integer(),
                 }
             },
+            plugins: {
+                'hapi-swagger': {
+                    deprecated: true,
+                },
+            },
             tags: ['api'],
             description: 'Translate an object'
         }
@@ -36,7 +41,26 @@ module.exports = function(server) {
         config: {
             tags: ['api']
         }
+    });
 
+    server.route({
+        method: 'POST',
+        path: '/translate/{targetLang}',
+        handler: handlers.translateText,
+        config: {
+            validate: {
+                params: {
+                    targetLang: Joi.string().lowercase(),
+                },
+                payload: {
+                    content: Joi.array().items(Joi.string().allow('')).single().required(),
+                    language: Joi.string().lowercase().required(),
+                    html: Joi.boolean().default(false),
+                },
+            },
+            tags: ['api'],
+            description: 'Translate a series of strings between languages',
+        }
     });
 
 };
