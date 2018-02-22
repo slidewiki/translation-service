@@ -24,6 +24,11 @@ module.exports = function(server) {
                     user: Joi.number().integer(),
                 }
             },
+            plugins: {
+                'hapi-swagger': {
+                    deprecated: true,
+                },
+            },
             tags: ['api'],
             description: 'Translate an object'
         }
@@ -36,55 +41,26 @@ module.exports = function(server) {
         config: {
             tags: ['api']
         }
-
     });
 
-    //Create new slide (by payload) and return it (...). Validate payload
-    // server.route({
-    //     method: 'POST',
-    //     path: '/slide/new',
-    //     handler: handlers.newSlide,
-    //     config: {
-    //         validate: {
-    //             payload: Joi.object().keys({
-    //                 title: Joi.string(),
-    //                 body: Joi.string(),
-    //                 user_id: Joi.string().alphanum().lowercase(),
-    //                 root_deck_id: Joi.string().alphanum().lowercase(),
-    //                 parent_deck_id: Joi.string().alphanum().lowercase(),
-    //                 no_new_revision: Joi.boolean(),
-    //                 position: Joi.number().integer().min(0),
-    //                 language: Joi.string()
-    //             }).requiredKeys('title', 'body'),
-    //         },
-    //         tags: ['api'],
-    //         description: 'Create a new slide'
-    //     }
-    // });
+    server.route({
+        method: 'POST',
+        path: '/translate/{targetLang}',
+        handler: handlers.translateText,
+        config: {
+            validate: {
+                params: {
+                    targetLang: Joi.string().lowercase(),
+                },
+                payload: {
+                    content: Joi.array().items(Joi.string().allow('')).single().required(),
+                    language: Joi.string().lowercase().required(),
+                    html: Joi.boolean().default(false),
+                },
+            },
+            tags: ['api'],
+            description: 'Translate a series of strings between languages',
+        }
+    });
 
-    //Update slide with id id (by payload) and return it (...). Validate payload
-    // server.route({
-    //     method: 'PUT',
-    //     path: '/slide/{id}',
-    //     handler: handlers.replaceSlide,
-    //     config: {
-    //         validate: {
-    //             params: {
-    //                 id: Joi.string().alphanum().lowercase()
-    //             },
-    //             payload: Joi.object().keys({
-    //                 title: Joi.string(),
-    //                 body: Joi.string(),
-    //                 user_id: Joi.string().alphanum().lowercase(),
-    //                 root_deck_id: Joi.string().alphanum().lowercase(),
-    //                 parent_deck_id: Joi.string().alphanum().lowercase(),
-    //                 no_new_revision: Joi.boolean(),
-    //                 position: Joi.number().integer().min(0),
-    //                 language: Joi.string()
-    //             }).requiredKeys('title', 'body'),
-    //         },
-    //         tags: ['api'],
-    //         description: 'Replace a slide'
-    //     }
-    // });
 };

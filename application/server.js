@@ -1,6 +1,5 @@
 /*
 This is a demo application implementing some interfaces as described in https://docs.google.com/document/d/1337m6i7Y0GPULKLsKpyHR4NRzRwhoxJnAZNnDFCigkc/edit#
-This application demonstrates a service which returns previously inserted data from a MongoDB database.
 */
 
 'use strict';
@@ -49,7 +48,7 @@ let plugins = [
         options: {
             host: host,
             info: {
-                title: 'Example API',
+                title: 'Deck and Slide Translation API',
                 description: 'Powered by node, hapi, joi, hapi-swaggered, hapi-swaggered-ui and swagger-ui',
                 version: '0.1.0'
             }

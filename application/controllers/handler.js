@@ -1,77 +1,82 @@
-/*
-Handles the requests by executing stuff and replying to the client. Uses promises to get stuff done.
-*/
+/* eslint promise/always-return: "off" */
 
 'use strict';
 
 const boom = require('boom'), //Boom gives us some predefined http codes and proper responses
-    slideDB = require('../database/slideDatabase'), //Database functions specific for slides
-    deckDB = require('../database/deckDatabase'), //Database functions specific for decks
-    helper = require('../database/helper'),
+    async = require('async'),
+    slideTranslator = require('../lib/slideTranslator'),
+    deckTranslator = require('../lib/deckTranslator'),
+    translationImpl = require('../services/mstranslator'),
     co = require('../common');
-
 
 module.exports = {
 
     getSupported: function(request, reply){
-        helper.getLanguagesAndNames((err, languages) => {
+        translationImpl.getLanguagesAndNames((err, languages) => {
             reply(languages);
         });
     },
 
+    translateText: function(request, reply) {
+        // check if languages are supported
+        let targetLang = request.params.targetLang,
+            targetCode = targetLang.substring(0, 2),
+            sourceLang = request.payload.language,
+            sourceCode = sourceLang.substring(0, 2);
+
+        translationImpl.getLanguagesAndNames((err, languages) => {
+            if (err) {
+                request.log('error', err);
+                return reply(boom.badImplementation());
+            }
+
+            if (languages.every((lang) => lang.code !== targetCode)) {
+                // not found
+                return reply(boom.notFound());
+            }
+
+            if (languages.every((lang) => lang.code !== sourceCode)) {
+                // not found in payload, bad data
+                return reply(boom.badData(`unsupported source language code: ${sourceLang}`));
+            }
+
+            // TODO merge with HTML strip-recombine work (?)
+
+            async.concatSeries(request.payload.content, (line, done) => {
+                translationImpl.translateLine(line, sourceCode, targetCode, done);
+            }, (err, translations) => {
+                if (err) {
+                    request.log('error', err);
+                    return reply(boom.badImplementation());
+                }
+
+                reply({sourceCode, targetCode, translations});
+            });
+
+        });
+
+    },
+
     //Get slide from database or return NOT FOUND
     translateObject: function(request, reply) {
-        let db_linker = '';
-        switch (request.params.type) {
-            case 'slide' : db_linker = slideDB;
-                break;
-            case 'deck' : db_linker = deckDB;
-                break;
+        let translator;
+        if (request.params.type === 'slide') {
+            translator = slideTranslator;
+        } else if (request.params.type === 'deck') {
+            translator = deckTranslator;
         }
+
         //console.log(request.payload.user);
-        db_linker.translate(encodeURIComponent(request.params.id), encodeURIComponent(request.payload.target), encodeURIComponent(request.payload.user)).then((translatedObject) => {
+        translator.translate(request.params.id, request.payload.target, request.payload.user).then((translatedObject) => {
             //if (err) console.log(err);
             if (co.isEmpty(translatedObject))
                 reply(boom.notFound());
             else
                 reply(translatedObject);
-        }).catch((error) => {
-            console.log('error', error);
+        }).catch((err) => {
+            request.log('error', err);
             reply(boom.badImplementation());
         });
     },
 
-    getSupported: function(request, reply){
-        helper.getLanguagesAndNames((err, languages) => {
-            reply(languages);
-        });
-    }
-
-
-
-    //Create Slide with new id and payload or return INTERNAL_SERVER_ERROR
-    // newSlide: function(request, reply) {
-    //     slideDB.insert(request.payload).then((inserted) => {
-    //         if (co.isEmpty(inserted.ops[0]))
-    //             throw inserted;
-    //         else
-    //         reply(co.rewriteID(inserted.ops[0]));
-    //     }).catch((error) => {
-    //         request.log('error', error);
-    //         reply(boom.badImplementation());
-    //     });
-    // },
-    //
-    // //Update Slide with id id and payload or return INTERNAL_SERVER_ERROR
-    // replaceSlide: function(request, reply) {
-    //     slideDB.replace(encodeURIComponent(request.params.id), request.payload).then((replaced) => {
-    //         if (co.isEmpty(replaced.value))
-    //             throw replaced;
-    //         else
-    //         reply(replaced.value);
-    //     }).catch((error) => {
-    //         request.log('error', error);
-    //         reply(boom.badImplementation());
-    //     });
-    // },
 };
