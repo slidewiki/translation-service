@@ -1,4 +1,7 @@
 /*eslint quotes: "warn"*/
+/*eslint indent: "warn"*/
+/*eslint no-irregular-whitespace: "warn"*/
+/*eslint no-useless-escape: "warn"*/
 'use strict';
 
 describe('Unit Tests - htmlHandler.js', () => {
@@ -17,6 +20,9 @@ describe('Unit Tests - htmlHandler.js', () => {
         config = require('../configuration.js');
         done();
     });
+
+    const notHtml = 'Dies ist ein slide text und er enthält kein HTML.';
+    const translatedText0 = ': 100:: Dies ist ein slide text und er enthält kein HTML.';
 
     const html1 = '<h1 id="41477">Title of the year</h1>';
     const translatedText1 = ': 41477:: Titel des Jahres';
@@ -236,6 +242,23 @@ echo 'Tag'</code></pre>
     const translatedText6 = `: 67711:: wfdedfsdf: 18077:: Text bullet 1: 75442:: Text bullet 2: 22340:: hohohohoho Dies ist meine Rache!: 38405:: Monat2: 68998:: Baum2: 29503:: Wiese2: 81919:: Vogel2: 26814:: Eis2`;
 
     context('Basic html to text', () => {
+        it('no HTML, just text', () => {
+            let {
+                text,
+                simpleText,
+                html
+            } = handler.htmlToText(notHtml);
+
+            console.log('New text:', text, "\n");
+            console.log('New html:', html, "\n");
+
+            expect(simpleText).to.equal(notHtml);
+
+            //now use translated text to update html
+            let translatedHtml = handler.setTranslatedTextInHtml(translatedText0, html);
+
+            expect(translatedHtml).to.equal(notHtml);
+        });
         it('one title', () => {
             let {
                 text,
@@ -419,20 +442,20 @@ extra content`);
 var i = 0;
 boolean true = true
 if (true === true)
-{alert(&apos;test&apos;);}
+{alert('test');}
 </code></pre>
 
-<pre id="60974"><code class="language-html" id="46542">&lt;b&gt;uiniz 78nz87n8&lt;/b&gt;
+<pre id="60974"><code class="language-html" id="46542"><b>uiniz 78nz87n8</b>
 
 
-&lt;body&gt;&lt;/body&gt;</code></pre>
+</code></pre>
 
 <div id="40553"></div>
 </div>
 
 <div id="75726">Text Text<strong id="47481">Text</strong>Text</div>
 
-<div id="63577">sadfsdff&#xA0;</div>
+<div id="63577">sadfsdff </div>
 
 <div id="61168"></div>
 
@@ -476,9 +499,9 @@ if (true === true)
 <div class="ui-draggable ui-resizable context-menu-disabled" id="92411" style="position: absolute; width: 400px; height: 400px; top: 387.268px; left: 63.4665px; z-index: 2147383647; cursor: auto;" tabindex="0">
 <pre id="69565"><code class="language-bash" id="16866">#!/bin/bash
 
-echo &quot;dummy&quot; &gt; /dfsf/dfdsf
-echo &apos;Tag&apos;</code></pre>
-<span id="38093">&#xA0;</span>
+echo "dummy" > /dfsf/dfdsf
+echo 'Tag'</code></pre>
+<span id="38093"> </span>
 
 <div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div>
 
@@ -497,7 +520,7 @@ echo &apos;Tag&apos;</code></pre>
 <div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div>
 </div>
 
-<div class="ui-draggable ui-resizable context-menu-disabled" id="55965" style="position: absolute; width: 400px; height: 400px; top: 250px; left: 200px; z-index: 2147383657; cursor: auto;" tabindex="0"><span id="24350">&#xA0;</span>
+<div class="ui-draggable ui-resizable context-menu-disabled" id="55965" style="position: absolute; width: 400px; height: 400px; top: 250px; left: 200px; z-index: 2147383657; cursor: auto;" tabindex="0"><span id="24350"> </span>
 
 <div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div>
 
@@ -516,7 +539,7 @@ echo &apos;Tag&apos;</code></pre>
 <div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div>
 </div>
 
-<div class="ui-draggable ui-resizable context-menu-disabled" id="70242" style="position: absolute; width: 300px; height: 200px; top: 375.442px; left: 618.968px; z-index: 2147383647; cursor: auto;" tabindex="0"><span id="36793"><span class="math-tex" id="8090">\(x = {-b \pm \sqrt{b^2-4ac} \over 2a}\)</span>&#xA0;</span></div>
+<div class="ui-draggable ui-resizable context-menu-disabled" id="70242" style="position: absolute; width: 300px; height: 200px; top: 375.442px; left: 618.968px; z-index: 2147383647; cursor: auto;" tabindex="0"><span id="36793"><span class="math-tex" id="8090">(x = {-b pm sqrt{b^2-4ac} over 2a})</span> </span></div>
 
 <div class="ui-draggable ui-resizable context-menu-disabled" id="35424" style="position: absolute; width: 400px; height: 300px; top: 656.063px; left: 60.3994px; z-index: 2147383647; cursor: auto;" tabindex="0">
 <table border="1" cellpadding="1" cellspacing="1" id="24285" style="width:500px;">
@@ -536,7 +559,7 @@ echo &apos;Tag&apos;</code></pre>
 		</tr>
 	</tbody>
 </table>
-<span id="32055">&#xA0;</span></div>
+<span id="32055"> </span></div>
 
 <div class="ui-draggable ui-resizable context-menu-disabled" id="83490" style="position: absolute; top: 100px; left: 100px; width: 400px; height: 300px; z-index: 2147383667; cursor: auto;" tabindex="0"><iframe allow="encrypted-media" frameborder="0" height="300" id="54604" src="https://www.youtube.com/watch?v=coHIfWcwm60" width="400"></iframe></div>
 </div>

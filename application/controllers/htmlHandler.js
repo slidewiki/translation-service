@@ -1,4 +1,6 @@
 /*eslint quotes: "warn"*/
+/*eslint no-useless-escape: "warn"*/
+/*eslint no-case-declarations: "warn"*/
 'use strict';
 
 const cheerio = require('cheerio'),
@@ -25,7 +27,7 @@ module.exports = {
             normalizeWhitespace: false,
             recognizeSelfClosing: true,
             withDomLvl1: false,
-            decodeEntities: true
+            decodeEntities: false
         });
 
         // console.log('root node:', $.root(), "\n");
@@ -66,7 +68,8 @@ module.exports = {
         $ = cheerio.load(html, {
             normalizeWhitespace: false,
             recognizeSelfClosing: true,
-            withDomLvl1: false
+            withDomLvl1: false,
+            decodeEntities: false
         });
 
         // console.log('DEBUG: html:', html, "\n");
@@ -123,7 +126,6 @@ function getTextSnippets_rec(childs) {
     switch (childs.length) {
         case 0:
             return [];
-            break;
         case 1:
             // console.log('handle one child which type is', childs[0].type, ', name is', childs[0].name, ' and attributes are', childs[0].attribs, "\n");
             if (childs[0].type === 'text')
@@ -145,7 +147,7 @@ function getTextSnippets_rec(childs) {
                 try {
                     children = element.children();
                 } catch (e) {
-
+                    //nothing
                 }
                 // console.log('recursive now with each - current child:', element.type, element.name, element.attribs, '', children);
                 if (children) {
