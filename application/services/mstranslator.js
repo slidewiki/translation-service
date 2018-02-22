@@ -3,6 +3,7 @@
 const async = require('async');
 const translator = require('mstranslator');
 const { mstranslatorApiKey, mockTranslation } = require('../configuration');
+const htmlHandler = require('../controllers/htmlHandler.js');
 
 // a mockup tranlsator
 let mockClient = {
@@ -88,15 +89,29 @@ let service = module.exports = {
         });
     },
 
-    translateLine: function(line, source, target, callback) {
+    translateLine: function(line, source, target, callback, isHTML = false) {
+        let toBeTranslated = line, html;
+
+        if (isHTML) {
+            let o = htmlHandler.htmlToText(line);
+            toBeTranslated = o.text; //string with the special syntax but without html
+            html = o.html; //enhanced html for later updating of texts
+        }
+
         let params = {
-            text: line,
+            text: toBeTranslated,
             from: source,
             to: target,
-            contentType: 'text/html'
+            contentType: isHTML ? 'text/html' : 'text/plain'
         };
+        console.log('now send the following to the API:', params);
         client.translate(params, (err, data) => {
-            callback(err, data);
+            if (isHTML && !err) {
+                let translatedHtml = htmlHandler.setTranslatedTextInHtml(data, html);
+                callback(err, translatedHtml);
+            }
+            else
+                callback(err, data);
         });
     },
 
