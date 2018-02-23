@@ -1,12 +1,10 @@
-/*eslint quotes: "warn"*/
 /*eslint indent: "warn"*/
 /*eslint no-irregular-whitespace: "warn"*/
-/*eslint no-useless-escape: "warn"*/
 'use strict';
 
 describe('Unit Tests - htmlHandler.js', () => {
 
-    let handler, expect, config;
+    let handler, expect, fs = require('fs');
 
     beforeEach((done) => {
         //Clean everything up before doing new tests
@@ -17,229 +15,31 @@ describe('Unit Tests - htmlHandler.js', () => {
         chai.use(chaiAsPromised);
         expect = require('chai').expect;
         handler = require('../controllers/htmlHandler.js');
-        config = require('../configuration.js');
         done();
     });
 
     const notHtml = 'Dies ist ein slide text und er enthält kein HTML.';
     const translatedText0 = ': 100:: Dies ist ein slide text und er enthält kein HTML.';
 
-    const html1 = '<h1 id="41477">Title of the year</h1>';
+    const html1 = fs.readFileSync('./tests/resources/1.html', 'utf8');
     const translatedText1 = ': 41477:: Titel des Jahres';
 
-    const html2 = `<h1 id="41477">Title of the year</h1>
-<p id="12874">Paragraph of the month</p>`;
-    const translatedText2 = `: 41477:: Titel des Jahres: 12874:: Paragraph des Monats`;
+    const html2 = fs.readFileSync('./tests/resources/2.html', 'utf8');
+    const translatedText2 = ': 41477:: Titel des Jahres: 12874:: Paragraph des Monats';
 
-    const html3 = `<h1 id="41477">Title of the year</h1>
-dummytext
-<p id="12874">Paragraph of the <b>month</b> again</p>
-extra content`;
-    const translatedText3 = `: 41477:: Titel des Jahres: 100:: dummytext: 12874:: Paragraph des: 101:: Monat: 12874-2:: wieder: 100-2:: extra Inhalt`;
+    const html3 = fs.readFileSync('./tests/resources/3.html', 'utf8');
+    const translatedText3 = ': 41477:: Titel des Jahres: 100:: dummytext: 12874:: Paragraph des: 101:: Monat: 12874-2:: wieder: 100-2:: extra Inhalt\n';
 
-    const html4 = `<div class="pptx2html" id="81669" style="position: relative; width: 960px; height: 720px; border-style: double; border-color: rgba(218, 102, 25, 0.5); transform: scale(1.13048, 1.13048); transform-origin: left top 0px;">
-<div id="76310"></div>
+    const html4 = fs.readFileSync('./tests/resources/4.html', 'utf8');
+    const translatedText4 = ': 27820:: Presentation of Models, which are used as part of the RE and design process,: 50573:: Usage of grafical models,: 89921:: Why?: 62932:: models of context: 95449:: Interaction models: 49812:: structural models: 99369:: models of whatever: 47708:: Concepts are awesome.: 80771:: Modelling of a system: 77370:: Targets: 48519:: (cc) : 51726:: All material provided on the SE9 website by Ian : 18535:: Sommerville: 52664:: http: 25872:: ://www.softwareengineering-9.com/';
 
-<div _id="6" _idx="4294967295" _name="Textplatzhalter 5" _type="undefined" class="block content v-up" id="53346" style="position: absolute; top: 95.4037px; left: 52.9132px; width: 859.087px; height: 547.763px; border: 1pt rgb(0, 0, 0); background-color: initial; z-index: 26728; cursor: auto;" tabindex="0">
-<div class="context-menu-one ui button blue outline 53346" id="53346" style="top: -32px; left: 0px; position: absolute; z-index: 90000000; display: none; cursor: auto;" tabindex="-1"></div>
+    const html5 = fs.readFileSync('./tests/resources/5.html', 'utf8');
 
-<div class="53346dragdiv dragdiv ui button orange outline" style="top: -32px; left: -30px; right: -30px; bottom: -30px; position: absolute; z-index: -1; opacity: 0.1; display: none; cursor: auto;" tabindex="-1"></div>
+    const translatedText5 = ': 75726:: Text Text: 47481:: Text: 75726-2:: Text: 63577:: sadfsdff : 25264:: sdf ds sdf sdaf sfas';
 
-<ul id="68133" style="list-style-type:circle;margin-left:30px;">
-	<li id="84276">
-	<div class="h-left" id="81612"><span class="text-block" id="27820" style="color: inherit; font-size: 20pt; font-family: +mn-lt; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">Vorstellung&nbsp;von Systemmodellen, die als Teil des RE und Entwurfsprozesses zum Einsatz kommen,</span></div>
-	</li>
-	<li id="48271">
-	<div class="h-left" id="51594"><span class="text-block" id="50573" style="color: inherit; font-size: 20pt; font-family: +mn-lt; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">Einsatz&nbsp;grafischer Modelle zur Repräsentation von Softwaresystemen,</span></div>
-	</li>
-	<li id="38012">
-	<div class="h-left" id="26602"><span class="text-block" id="89921" style="color: inherit; font-size: 20pt; font-family: +mn-lt; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">Warum&nbsp;sind unterschiedliche Modelltypen notwendig?</span></div>
-	</li>
-</ul>
+    const html6 = fs.readFileSync('./tests/resources/6.html', 'utf8');
 
-<ul id="47949" style="list-style-type:square;margin-left:60px;">
-	<li id="24009">
-	<div class="h-left" id="16926"><span class="text-block" id="62932" style="color: inherit; font-size: 20pt; font-family: +mn-lt; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">Kontextmodelle</span></div>
-	</li>
-	<li id="5363">
-	<div class="h-left" id="63855"><span class="text-block" id="95449" style="color: inherit; font-size: 20pt; font-family: +mn-lt; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">Interaktionsmodelle</span></div>
-	</li>
-	<li id="77417">
-	<div class="h-left" id="85821"><span class="text-block" id="49812" style="color: inherit; font-size: 20pt; font-family: +mn-lt; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">Strukturmodelle</span></div>
-	</li>
-	<li id="50978">
-	<div class="h-left" id="65636"><span class="text-block" id="99369" style="color: inherit; font-size: 20pt; font-family: +mn-lt; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">Verhaltensmodelle</span></div>
-	</li>
-</ul>
-
-<ul id="99336" style="list-style-type:circle;margin-left:30px;">
-	<li id="88413">
-	<div class="h-left" id="50306"><span class="text-block" id="47708" style="color: inherit; font-size: 20pt; font-family: +mn-lt; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">Konzepte&nbsp;auf denen die modellgetriebene Softwareentwicklung beruht, um beispielsweise ein System aus struktur- und verhaltensbasierten Modellen zu erzeugen.</span></div>
-	</li>
-</ul>
-</div>
-
-<div _id="8" _idx="undefined" _name="Text Box 65" _type="undefined" class="drawing-container" id="79956" style="position: absolute; top: 7.99958px; left: 52.9132px; width: 684.123px; height: 50.0841px; z-index: 26775; cursor: auto;" tabindex="0">
-<div class="context-menu-one ui button blue outline 79956" id="79956" style="top: -32px; left: 0px; position: absolute; z-index: 90000000; display: none; cursor: auto;" tabindex="-1"></div>
-
-<div class="79956dragdiv dragdiv ui button orange outline" style="top: -32px; left: -30px; right: -30px; bottom: -30px; position: absolute; z-index: -1; opacity: 0.1; display: none; cursor: auto;" tabindex="-1"></div>
-<svg _id="8" _idx="undefined" _name="Text Box 65" _type="undefined" class="drawing" id="81355" style="position: absolute; top: 0px; left: 0px; width: 684.123px; height: 50.0841px; z-index: 26775; cursor: auto;"><rect fill="none" height="50.084094488188974" id="74361" stroke="none" stroke-dasharray="0" stroke-width="1" width="684.1228346456693" x="0" y="0"></rect></svg></div>
-
-<div _id="8" _idx="undefined" _name="Text Box 65" _type="undefined" class="block content v-up" id="15747" style="position: absolute; top: 7.99958px; left: 52.9132px; width: 684.123px; height: 50.0841px; z-index: 26775; cursor: auto;" tabindex="0">
-<div class="context-menu-one ui button blue outline 15747" id="15747" style="top: -32px; left: 0px; position: absolute; z-index: 90000000; display: none; cursor: auto;" tabindex="-1"></div>
-
-<div class="15747dragdiv dragdiv ui button orange outline" style="top: -32px; left: -30px; right: -30px; bottom: -30px; position: absolute; z-index: -1; opacity: 0.1; display: none; cursor: auto;" tabindex="-1"></div>
-
-<div class="h-left" id="35466"><span class="text-block" id="80771" style="color: #595959; font-size: 25pt; font-family: inherit; font-weight: bold; font-style: inherit; text-decoration: initial; vertical-align: ;">Systemmodellierung</span></div>
-</div>
-
-<div _id="12" _idx="undefined" _name="Titel 4" _type="title" class="block content v-mid" id="31803" style="position: absolute; top: 48.2841px; left: 52.9131px; width: 480px; height: 31.9996px; border: 1pt rgb(0, 0, 0); z-index: 26797; cursor: auto;" tabindex="0">
-<div class="context-menu-one ui button blue outline 31803" id="31803" style="top: -32px; left: 0px; position: absolute; z-index: 90000000; display: none; cursor: auto;" tabindex="-1"></div>
-
-<div class="31803dragdiv dragdiv ui button orange outline" style="top: -32px; left: -30px; right: -30px; bottom: -30px; position: absolute; z-index: -1; opacity: 0.1; display: none; cursor: auto;" tabindex="-1"></div>
-
-<div class="h-mid" id="92156">
-<h3 id="35494"><span class="text-block" id="77370" style="color: inherit; font-size: inherit; font-family: inherit; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">Lernziele&nbsp;und Übersicht</span></h3>
-</div>
-</div>
-
-<div _id="2" _idx="undefined" _name="Textfeld 1" _type="undefined" class="drawing-container" id="23186" style="position: absolute; top: 654.836px; left: 45.2588px; width: 842.976px; height: 25.85px; z-index: 26906; cursor: auto;" tabindex="0">
-<div class="context-menu-one ui button blue outline 23186" id="23186" style="top: -32px; left: 0px; position: absolute; z-index: 90000000; display: none; cursor: auto;" tabindex="-1"></div>
-
-<div class="23186dragdiv dragdiv ui button orange outline" style="top: -32px; left: -30px; right: -30px; bottom: -30px; position: absolute; z-index: -1; opacity: 0.1; display: none; cursor: auto;" tabindex="-1"></div>
-<svg _id="2" _idx="undefined" _name="Textfeld 1" _type="undefined" class="drawing" id="70670" style="position: absolute; top: 0px; left: 0px; width: 842.976px; height: 25.85px; z-index: 26906; cursor: auto;"><rect fill="none" height="25.84997375328084" id="91980" stroke="none" stroke-dasharray="0" stroke-width="1" width="842.9755380577428" x="0" y="0"></rect></svg></div>
-
-<div _id="2" _idx="undefined" _name="Textfeld 1" _type="undefined" class="block content v-up" id="31330" style="position: absolute; top: 654.836px; left: 45.2588px; width: 842.976px; height: 25.85px; z-index: 26906; cursor: auto;" tabindex="0">
-<div class="context-menu-one ui button blue outline 31330" id="31330" style="top: -32px; left: 0px; position: absolute; z-index: 90000000; display: none; cursor: auto;" tabindex="-1"></div>
-
-<div class="31330dragdiv dragdiv ui button orange outline" style="top: -32px; left: -30px; right: -30px; bottom: -30px; position: absolute; z-index: -1; opacity: 0.1; display: none; cursor: auto;" tabindex="-1"></div>
-
-<div class="h-left" id="99720"><span class="text-block" id="48519" style="color: inherit; font-size: 10pt; font-family: Arial; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">(cc)&nbsp;</span><span class="text-block" id="51726" style="color: inherit; font-size: 10pt; font-family: Arial; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">All&nbsp;material provided on the SE9 website by Ian </span><span class="text-block" id="18535" style="color: inherit; font-size: 10pt; font-family: Arial; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">Sommerville</span><span class="text-block" id="39606" style="color: inherit; font-size: 10pt; font-family: Arial; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">&nbsp;- </span><span class="text-block" id="52664" style="color: inherit; font-size: 10pt; font-family: Arial; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">http</span><span class="text-block" id="25872" style="color: inherit; font-size: 10pt; font-family: Arial; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">://www.softwareengineering-9.com/</span></div>
-</div>
-</div>
-`;
-    const translatedText4 = `: 27820:: Presentation of Models, which are used as part of the RE and design process,: 50573:: Usage of grafical models,: 89921:: Why?: 62932:: models of context: 95449:: Interaction models: 49812:: structural models: 99369:: models of whatever: 47708:: Concepts are awesome.: 80771:: Modelling of a system: 77370:: Targets: 48519:: (cc) : 51726:: All material provided on the SE9 website by Ian : 18535:: Sommerville: 52664:: http: 25872:: ://www.softwareengineering-9.com/`;
-
-    const html5 = `<div id="44288"><span class="math-tex" id="4204">\(x = {-b \pm \sqrt{b^2-4ac} \over 2a}\)</span>
-<pre id="39741">
-<code class="language-javascript" id="95541">let test = true;
-var i = 0;
-boolean true = true
-if (true === true)
-{alert('test');}
-</code></pre>
-
-<pre id="60974">
-<code class="language-html" id="46542">&lt;b&gt;uiniz 78nz87n8&lt;/b&gt;
-
-
-&lt;body&gt;&lt;/body&gt;</code></pre>
-
-<div id="40553"></div>
-</div>
-
-<div id="75726">Text Text<strong id="47481">Text</strong>
-Text</div>
-
-<div id="63577">sadfsdff&nbsp;</div>
-
-<div id="61168"></div>
-
-<div id="25264">sdf ds sdf sdaf sfas</div>`;
-
-    const translatedText5 = `: 75726:: Text Text: 47481:: Text: 75726-2:: Text: 63577:: sadfsdff : 25264:: sdf ds sdf sdaf sfas`;
-
-    const html6 = `<div class="pptx2html" id="97844" style="position: relative; width: 1920px; height: 1080px; transform: scale(0.75736, 0.75736); transform-origin: left top 0px; border-style: double; border-color: rgba(218, 102, 25, 0.5);">
-<div _id="2" _idx="undefined" _name="Title 1" _type="title" class="block content v-mid h-mid ui-draggable ui-resizable context-menu-disabled" id="51873" style="position: absolute; top: 38.3334px; left: 66px; width: 828px; height: 139.167px; z-index: 23488; cursor: auto;" tabindex="0">
-<h3 id="67711">wfdedfsdf</h3>
-</div>
-
-<div _id="3" _idx="1" _name="Content Placeholder 2" _type="body" class="block content v-up ui-draggable ui-resizable context-menu-disabled" id="51237" style="position: absolute; top: 191.667px; left: 66px; width: 828px; height: 456.833px; z-index: 23520; cursor: auto;" tabindex="0">
-<ul id="39440">
-	<li id="18077">Text bullet 1</li>
-	<li id="75442">Text bullet 2</li>
-</ul>
-
-<div class="h-left" id="26039"></div>
-
-<div class="h-left" id="13761"></div>
-
-<div class="h-left" id="22340">hohohohoho this is my revange!</div>
-</div>
-
-<div class="ui-draggable ui-resizable context-menu-disabled" id="73403" style="position: absolute; top: 83.2547px; left: 1085px; z-index: 2147383647; cursor: auto;" tabindex="0"><img alt="box" id="63150" src="https://fileservice.experimental.slidewiki.org/picture/922857357087a1f5b555db956d9e7bd297ee21c697fcf0001c59a639441907fc.jpg" /></div>
-
-<div class="ui-draggable ui-resizable context-menu-disabled" id="92411" style="position: absolute; width: 400px; height: 400px; top: 387.268px; left: 63.4665px; z-index: 2147383647; cursor: auto;" tabindex="0">
-<pre id="69565">
-<code class="language-bash" id="16866">#!/bin/bash
-
-echo "dummy" &gt; /dfsf/dfdsf
-echo 'Tag'</code></pre>
-<span id="38093">&nbsp;</span>
-
-<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div>
-
-<div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div>
-
-<div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div>
-
-<div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div>
-
-<div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div>
-
-<div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div>
-
-<div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div>
-
-<div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div>
-</div>
-
-<div class="ui-draggable ui-resizable context-menu-disabled" id="55965" style="position: absolute; width: 400px; height: 400px; top: 250px; left: 200px; z-index: 2147383657; cursor: auto;" tabindex="0"><span id="24350">&nbsp;</span>
-
-<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div>
-
-<div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div>
-
-<div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div>
-
-<div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div>
-
-<div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div>
-
-<div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div>
-
-<div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div>
-
-<div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div>
-</div>
-
-<div class="ui-draggable ui-resizable context-menu-disabled" id="70242" style="position: absolute; width: 300px; height: 200px; top: 375.442px; left: 618.968px; z-index: 2147383647; cursor: auto;" tabindex="0"><span id="36793"><span class="math-tex" id="8090">\(x = {-b \pm \sqrt{b^2-4ac} \over 2a}\)</span>&nbsp;</span></div>
-
-<div class="ui-draggable ui-resizable context-menu-disabled" id="35424" style="position: absolute; width: 400px; height: 300px; top: 656.063px; left: 60.3994px; z-index: 2147383647; cursor: auto;" tabindex="0">
-<table border="1" cellpadding="1" cellspacing="1" id="24285" style="width:500px;">
-	<caption id="38405">Monat</caption>
-	<tbody id="5277">
-		<tr id="58260">
-			<td id="68998">Baum</td>
-			<td id="29503">Wiese</td>
-		</tr>
-		<tr id="57296">
-			<td id="81919">Vogel</td>
-			<td id="22111"></td>
-		</tr>
-		<tr id="74328">
-			<td id="12027"></td>
-			<td id="26814">Eis</td>
-		</tr>
-	</tbody>
-</table>
-<span id="32055">&nbsp;</span></div>
-
-<div class="ui-draggable ui-resizable context-menu-disabled" id="83490" style="position: absolute; top: 100px; left: 100px; width: 400px; height: 300px; z-index: 2147383667; cursor: auto;" tabindex="0"><iframe allow="encrypted-media" frameborder="0" height="300" id="54604" src="https://www.youtube.com/watch?v=coHIfWcwm60" width="400"></iframe></div>
-</div>
-`;
-
-    const translatedText6 = `: 67711:: wfdedfsdf: 18077:: Text bullet 1: 75442:: Text bullet 2: 22340:: hohohohoho Dies ist meine Rache!: 38405:: Monat2: 68998:: Baum2: 29503:: Wiese2: 81919:: Vogel2: 26814:: Eis2`;
+    const translatedText6 = ': 67711:: wfdedfsdf: 18077:: Text bullet 1: 75442:: Text bullet 2: 22340:: hohohohoho Dies ist meine Rache!: 38405:: Monat2: 68998:: Baum2: 29503:: Wiese2: 81919:: Vogel2: 26814:: Eis2';
 
     context('Basic html to text', () => {
         it('no HTML, just text', () => {
@@ -249,8 +49,8 @@ echo 'Tag'</code></pre>
                 html
             } = handler.htmlToText(notHtml);
 
-            console.log('New text:', text, "\n");
-            console.log('New html:', html, "\n");
+            console.log('New text:', text, '\n');
+            console.log('New html:', html, '\n');
 
             expect(simpleText).to.equal(notHtml);
 
@@ -266,15 +66,15 @@ echo 'Tag'</code></pre>
                 html
             } = handler.htmlToText(html1);
 
-            console.log('New text:', text, "\n");
-            console.log('New html:', html, "\n");
+            console.log('New text:', text, '\n');
+            console.log('New html:', html, '\n');
 
-            expect(simpleText).to.equal(`Title of the year`);
+            expect(simpleText).to.equal('Title of the year\n');
 
             //now use translated text to update html
             let translatedHtml = handler.setTranslatedTextInHtml(translatedText1, html);
 
-            expect(translatedHtml).to.equal(`<h1 id="41477">Titel des Jahres</h1>`);
+            expect(translatedHtml).to.equal(fs.readFileSync('./tests/resources/1_translated.html', 'utf8'));
         });
         it('one title and a paragraph', () => {
             let {
@@ -283,16 +83,16 @@ echo 'Tag'</code></pre>
                 html
             } = handler.htmlToText(html2);
 
-            console.log('New text:', text, "\n");
+            console.log('New text:', text, '\n');
 
             expect(simpleText).to.equal(`Title of the year
-Paragraph of the month`);
+Paragraph of the month
+`);
 
             //now use translated text to update html
             let translatedHtml = handler.setTranslatedTextInHtml(translatedText2, html);
 
-            expect(translatedHtml).to.equal(`<h1 id="41477">Titel des Jahres</h1>
-<p id="12874">Paragraph des Monats</p>`);
+            expect(translatedHtml).to.equal(fs.readFileSync('./tests/resources/2_translated.html', 'utf8'));
         });
         it('one title and a paragraph with bold text and text in between', () => {
             let {
@@ -301,132 +101,52 @@ Paragraph of the month`);
                 html
             } = handler.htmlToText(html3);
 
-            console.log('New text:', text, "\n");
+            console.log('New text:', text, '\n');
 
             expect(simpleText).to.equal(`Title of the year
 dummytext
 Paragraph of the month again
-extra content`);
+extra content
+`);
 
             //now use translated text to update html
             let translatedHtml = handler.setTranslatedTextInHtml(translatedText3, html);
 
-            expect(translatedHtml).to.equal(`<h1 id="41477">Titel des Jahres</h1>dummytext<p id="12874">Paragraph des<b id="101">Monat</b>wieder</p>extra Inhalt`);
+            expect(translatedHtml).to.equal(fs.readFileSync('./tests/resources/3_translated.html', 'utf8'));
         });
 
-//         it('big html from slide  (slidewiki.aksw.org)', () => {
-//             let {
-//                 text,
-//                 simpleText,
-//                 html
-//             } = handler.htmlToText(html4);
-//
-//             console.log('New text:', text, "\n");
-//
-//             // expect(simpleText).to.equal(`Lernziele und Übersicht
-//             //   Systemmodellierung
-//             //   Vorstellung von Systemmodellen, die als Teil des RE und Entwurfsprozesses zum Einsatz kommen,
-//             //   Einsatz grafischer Modelle zur Repräsentation von Softwaresystemen,
-//             //   Warum sind unterschiedliche Modelltypen notwendig?
-//             //   Kontextmodelle
-//             //   Interaktionsmodelle
-//             //   Strukturmodelle
-//             //   Verhaltensmodelle
-//             //   Konzepte auf denen die modellgetriebene Softwareentwicklung beruht, um beispielsweise ein System aus struktur- und verhaltensbasierten Modellen zu erzeugen.`);
-//
-//             //now use translated text to update html
-//             let translatedHtml = handler.setTranslatedTextInHtml(translatedText4, html);
-//
-//             expect(translatedHtml).to.equal(`<div class="pptx2html" id="81669" style="position: relative; width: 960px; height: 720px; border-style: double; border-color: rgba(218, 102, 25, 0.5); transform: scale(1.13048, 1.13048); transform-origin: left top 0px;">
-// <div id="76310"></div>
-//
-// <div _id="6" _idx="4294967295" _name="Textplatzhalter 5" _type="undefined" class="block content v-up" id="53346" style="position: absolute; top: 95.4037px; left: 52.9132px; width: 859.087px; height: 547.763px; border: 1pt rgb(0, 0, 0); background-color: initial; z-index: 26728; cursor: auto;" tabindex="0">
-// <div class="context-menu-one ui button blue outline 53346" id="53346" style="top: -32px; left: 0px; position: absolute; z-index: 90000000; display: none; cursor: auto;" tabindex="-1"></div>
-//
-// <div class="53346dragdiv dragdiv ui button orange outline" style="top: -32px; left: -30px; right: -30px; bottom: -30px; position: absolute; z-index: -1; opacity: 0.1; display: none; cursor: auto;" tabindex="-1"></div>
-//
-// <ul id="68133" style="list-style-type:circle;margin-left:30px;">
-// 	<li id="84276">
-// 	<div class="h-left" id="81612"><span class="text-block" id="27820" style="color: inherit; font-size: 20pt; font-family: +mn-lt; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">Vorstellung&#xA0;von Systemmodellen, die als Teil des RE und Entwurfsprozesses zum Einsatz kommen,</span></div>
-// 	</li>
-// 	<li id="48271">
-// 	<div class="h-left" id="51594"><span class="text-block" id="50573" style="color: inherit; font-size: 20pt; font-family: +mn-lt; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">Einsatz&#xA0;grafischer Modelle zur Repr&#xE4;sentation von Softwaresystemen,</span></div>
-// 	</li>
-// 	<li id="38012">
-// 	<div class="h-left" id="26602"><span class="text-block" id="89921" style="color: inherit; font-size: 20pt; font-family: +mn-lt; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">Warum&#xA0;sind unterschiedliche Modelltypen notwendig?</span></div>
-// 	</li>
-// </ul>
-//
-// <ul id="47949" style="list-style-type:square;margin-left:60px;">
-// 	<li id="24009">
-// 	<div class="h-left" id="16926"><span class="text-block" id="62932" style="color: inherit; font-size: 20pt; font-family: +mn-lt; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">Kontextmodelle</span></div>
-// 	</li>
-// 	<li id="5363">
-// 	<div class="h-left" id="63855"><span class="text-block" id="95449" style="color: inherit; font-size: 20pt; font-family: +mn-lt; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">Interaktionsmodelle</span></div>
-// 	</li>
-// 	<li id="77417">
-// 	<div class="h-left" id="85821"><span class="text-block" id="49812" style="color: inherit; font-size: 20pt; font-family: +mn-lt; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">Strukturmodelle</span></div>
-// 	</li>
-// 	<li id="50978">
-// 	<div class="h-left" id="65636"><span class="text-block" id="99369" style="color: inherit; font-size: 20pt; font-family: +mn-lt; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">Verhaltensmodelle</span></div>
-// 	</li>
-// </ul>
-//
-// <ul id="99336" style="list-style-type:circle;margin-left:30px;">
-// 	<li id="88413">
-// 	<div class="h-left" id="50306"><span class="text-block" id="47708" style="color: inherit; font-size: 20pt; font-family: +mn-lt; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">Konzepte&#xA0;auf denen die modellgetriebene Softwareentwicklung beruht, um beispielsweise ein System aus struktur- und verhaltensbasierten Modellen zu erzeugen.</span></div>
-// 	</li>
-// </ul>
-// </div>
-//
-// <div _id="8" _idx="undefined" _name="Text Box 65" _type="undefined" class="drawing-container" id="79956" style="position: absolute; top: 7.99958px; left: 52.9132px; width: 684.123px; height: 50.0841px; z-index: 26775; cursor: auto;" tabindex="0">
-// <div class="context-menu-one ui button blue outline 79956" id="79956" style="top: -32px; left: 0px; position: absolute; z-index: 90000000; display: none; cursor: auto;" tabindex="-1"></div>
-//
-// <div class="79956dragdiv dragdiv ui button orange outline" style="top: -32px; left: -30px; right: -30px; bottom: -30px; position: absolute; z-index: -1; opacity: 0.1; display: none; cursor: auto;" tabindex="-1"></div>
-// <svg _id="8" _idx="undefined" _name="Text Box 65" _type="undefined" class="drawing" id="81355" style="position: absolute; top: 0px; left: 0px; width: 684.123px; height: 50.0841px; z-index: 26775; cursor: auto;"><rect fill="none" height="50.084094488188974" id="74361" stroke="none" stroke-dasharray="0" stroke-width="1" width="684.1228346456693" x="0" y="0"/></svg></div>
-//
-// <div _id="8" _idx="undefined" _name="Text Box 65" _type="undefined" class="block content v-up" id="15747" style="position: absolute; top: 7.99958px; left: 52.9132px; width: 684.123px; height: 50.0841px; z-index: 26775; cursor: auto;" tabindex="0">
-// <div class="context-menu-one ui button blue outline 15747" id="15747" style="top: -32px; left: 0px; position: absolute; z-index: 90000000; display: none; cursor: auto;" tabindex="-1"></div>
-//
-// <div class="15747dragdiv dragdiv ui button orange outline" style="top: -32px; left: -30px; right: -30px; bottom: -30px; position: absolute; z-index: -1; opacity: 0.1; display: none; cursor: auto;" tabindex="-1"></div>
-//
-// <div class="h-left" id="35466"><span class="text-block" id="80771" style="color: #595959; font-size: 25pt; font-family: inherit; font-weight: bold; font-style: inherit; text-decoration: initial; vertical-align: ;">Systemmodellierung</span></div>
-// </div>
-//
-// <div _id="12" _idx="undefined" _name="Titel 4" _type="title" class="block content v-mid" id="31803" style="position: absolute; top: 48.2841px; left: 52.9131px; width: 480px; height: 31.9996px; border: 1pt rgb(0, 0, 0); z-index: 26797; cursor: auto;" tabindex="0">
-// <div class="context-menu-one ui button blue outline 31803" id="31803" style="top: -32px; left: 0px; position: absolute; z-index: 90000000; display: none; cursor: auto;" tabindex="-1"></div>
-//
-// <div class="31803dragdiv dragdiv ui button orange outline" style="top: -32px; left: -30px; right: -30px; bottom: -30px; position: absolute; z-index: -1; opacity: 0.1; display: none; cursor: auto;" tabindex="-1"></div>
-//
-// <div class="h-mid" id="92156">
-// <h3 id="35494"><span class="text-block" id="77370" style="color: inherit; font-size: inherit; font-family: inherit; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">Lernziele&#xA0;und &#xDC;bersicht</span></h3>
-// </div>
-// </div>
-//
-// <div _id="2" _idx="undefined" _name="Textfeld 1" _type="undefined" class="drawing-container" id="23186" style="position: absolute; top: 654.836px; left: 45.2588px; width: 842.976px; height: 25.85px; z-index: 26906; cursor: auto;" tabindex="0">
-// <div class="context-menu-one ui button blue outline 23186" id="23186" style="top: -32px; left: 0px; position: absolute; z-index: 90000000; display: none; cursor: auto;" tabindex="-1"></div>
-//
-// <div class="23186dragdiv dragdiv ui button orange outline" style="top: -32px; left: -30px; right: -30px; bottom: -30px; position: absolute; z-index: -1; opacity: 0.1; display: none; cursor: auto;" tabindex="-1"></div>
-// <svg _id="2" _idx="undefined" _name="Textfeld 1" _type="undefined" class="drawing" id="70670" style="position: absolute; top: 0px; left: 0px; width: 842.976px; height: 25.85px; z-index: 26906; cursor: auto;"><rect fill="none" height="25.84997375328084" id="91980" stroke="none" stroke-dasharray="0" stroke-width="1" width="842.9755380577428" x="0" y="0"/></svg></div>
-//
-// <div _id="2" _idx="undefined" _name="Textfeld 1" _type="undefined" class="block content v-up" id="31330" style="position: absolute; top: 654.836px; left: 45.2588px; width: 842.976px; height: 25.85px; z-index: 26906; cursor: auto;" tabindex="0">
-// <div class="context-menu-one ui button blue outline 31330" id="31330" style="top: -32px; left: 0px; position: absolute; z-index: 90000000; display: none; cursor: auto;" tabindex="-1"></div>
-//
-// <div class="31330dragdiv dragdiv ui button orange outline" style="top: -32px; left: -30px; right: -30px; bottom: -30px; position: absolute; z-index: -1; opacity: 0.1; display: none; cursor: auto;" tabindex="-1"></div>
-//
-// <div class="h-left" id="99720"><span class="text-block" id="48519" style="color: inherit; font-size: 10pt; font-family: Arial; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">(cc)&#xA0;</span><span class="text-block" id="51726" style="color: inherit; font-size: 10pt; font-family: Arial; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">All&#xA0;material provided on the SE9 website by Ian </span><span class="text-block" id="18535" style="color: inherit; font-size: 10pt; font-family: Arial; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">Sommerville</span><span class="text-block" id="39606" style="color: inherit; font-size: 10pt; font-family: Arial; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">&#xA0;- </span><span class="text-block" id="52664" style="color: inherit; font-size: 10pt; font-family: Arial; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">http</span><span class="text-block" id="25872" style="color: inherit; font-size: 10pt; font-family: Arial; font-weight: inherit; font-style: inherit; text-decoration: initial; vertical-align: ;">://www.softwareengineering-9.com/</span></div>
-// </div>
-// </div>`);
-//         });
+        it('big html from slide  (slidewiki.aksw.org)', () => {
+            let {
+                text,
+                html
+            } = handler.htmlToText(html4);
+
+            console.log('New text:', text, '\n');
+
+            // expect(simpleText).to.equal(`Lernziele und Übersicht
+            //   Systemmodellierung
+            //   Vorstellung von Systemmodellen, die als Teil des RE und Entwurfsprozesses zum Einsatz kommen,
+            //   Einsatz grafischer Modelle zur Repräsentation von Softwaresystemen,
+            //   Warum sind unterschiedliche Modelltypen notwendig?
+            //   Kontextmodelle
+            //   Interaktionsmodelle
+            //   Strukturmodelle
+            //   Verhaltensmodelle
+            //   Konzepte auf denen die modellgetriebene Softwareentwicklung beruht, um beispielsweise ein System aus struktur- und verhaltensbasierten Modellen zu erzeugen.`);
+
+            //now use translated text to update html
+            let translatedHtml = handler.setTranslatedTextInHtml(translatedText4, html);
+
+            expect(translatedHtml).to.equal(fs.readFileSync('./tests/resources/4_translated.html', 'utf8'));
+        });
 
         it('Code and math elements', () => {
             let {
                 text,
-                simpleText,
                 html
             } = handler.htmlToText(html5);
 
-            console.log('New text:', text, "\n");
+            console.log('New text:', text, '\n');
 
 //             expect(simpleText).to.equal(`Text Text
 // Text
@@ -437,133 +157,23 @@ extra content`);
             //now use translated text to update html
             let translatedHtml = handler.setTranslatedTextInHtml(translatedText5, html);
 
-            expect(translatedHtml).to.equal(`<div id="44288"><span class="math-tex" id="4204">\(x = {-b \pm \sqrt{b^2-4ac} \over 2a}\)</span>
-<pre id="39741"><code class="language-javascript" id="95541">let test = true;
-var i = 0;
-boolean true = true
-if (true === true)
-{alert('test');}
-</code></pre>
-
-<pre id="60974"><code class="language-html" id="46542"><b>uiniz 78nz87n8</b>
-
-
-</code></pre>
-
-<div id="40553"></div>
-</div>
-
-<div id="75726">Text Text<strong id="47481">Text</strong>Text</div>
-
-<div id="63577">sadfsdff </div>
-
-<div id="61168"></div>
-
-<div id="25264">sdf ds sdf sdaf sfas</div>`);
+            expect(translatedHtml).to.equal(fs.readFileSync('./tests/resources/5_translated.html', 'utf8'));
         });
 
         it('With everything', () => {
             let {
                 text,
-                simpleText,
                 html
             } = handler.htmlToText(html6);
 
-            console.log('New text:', text, "\n");
+            console.log('New text:', text, '\n');
 
 //             expect(simpleText).to.equal(``);
 
             //now use translated text to update html
             let translatedHtml = handler.setTranslatedTextInHtml(translatedText6, html);
 
-            expect(translatedHtml).to.equal(`<div class="pptx2html" id="97844" style="position: relative; width: 1920px; height: 1080px; transform: scale(0.75736, 0.75736); transform-origin: left top 0px; border-style: double; border-color: rgba(218, 102, 25, 0.5);">
-<div _id="2" _idx="undefined" _name="Title 1" _type="title" class="block content v-mid h-mid ui-draggable ui-resizable context-menu-disabled" id="51873" style="position: absolute; top: 38.3334px; left: 66px; width: 828px; height: 139.167px; z-index: 23488; cursor: auto;" tabindex="0">
-<h3 id="67711">wfdedfsdf</h3>
-</div>
-
-<div _id="3" _idx="1" _name="Content Placeholder 2" _type="body" class="block content v-up ui-draggable ui-resizable context-menu-disabled" id="51237" style="position: absolute; top: 191.667px; left: 66px; width: 828px; height: 456.833px; z-index: 23520; cursor: auto;" tabindex="0">
-<ul id="39440">
-	<li id="18077">Text bullet 1</li>
-	<li id="75442">Text bullet 2</li>
-</ul>
-
-<div class="h-left" id="26039"></div>
-
-<div class="h-left" id="13761"></div>
-
-<div class="h-left" id="22340">hohohohoho Dies ist meine Rache!</div>
-</div>
-
-<div class="ui-draggable ui-resizable context-menu-disabled" id="73403" style="position: absolute; top: 83.2547px; left: 1085px; z-index: 2147383647; cursor: auto;" tabindex="0"><img alt="box" id="63150" src="https://fileservice.experimental.slidewiki.org/picture/922857357087a1f5b555db956d9e7bd297ee21c697fcf0001c59a639441907fc.jpg"></div>
-
-<div class="ui-draggable ui-resizable context-menu-disabled" id="92411" style="position: absolute; width: 400px; height: 400px; top: 387.268px; left: 63.4665px; z-index: 2147383647; cursor: auto;" tabindex="0">
-<pre id="69565"><code class="language-bash" id="16866">#!/bin/bash
-
-echo "dummy" > /dfsf/dfdsf
-echo 'Tag'</code></pre>
-<span id="38093"> </span>
-
-<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div>
-
-<div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div>
-
-<div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div>
-
-<div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div>
-
-<div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div>
-
-<div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div>
-
-<div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div>
-
-<div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div>
-</div>
-
-<div class="ui-draggable ui-resizable context-menu-disabled" id="55965" style="position: absolute; width: 400px; height: 400px; top: 250px; left: 200px; z-index: 2147383657; cursor: auto;" tabindex="0"><span id="24350"> </span>
-
-<div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div>
-
-<div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div>
-
-<div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div>
-
-<div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div>
-
-<div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div>
-
-<div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div>
-
-<div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div>
-
-<div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div>
-</div>
-
-<div class="ui-draggable ui-resizable context-menu-disabled" id="70242" style="position: absolute; width: 300px; height: 200px; top: 375.442px; left: 618.968px; z-index: 2147383647; cursor: auto;" tabindex="0"><span id="36793"><span class="math-tex" id="8090">(x = {-b pm sqrt{b^2-4ac} over 2a})</span> </span></div>
-
-<div class="ui-draggable ui-resizable context-menu-disabled" id="35424" style="position: absolute; width: 400px; height: 300px; top: 656.063px; left: 60.3994px; z-index: 2147383647; cursor: auto;" tabindex="0">
-<table border="1" cellpadding="1" cellspacing="1" id="24285" style="width:500px;">
-	<caption id="38405">Monat2</caption>
-	<tbody id="5277">
-		<tr id="58260">
-			<td id="68998">Baum2</td>
-			<td id="29503">Wiese2</td>
-		</tr>
-		<tr id="57296">
-			<td id="81919">Vogel2</td>
-			<td id="22111"></td>
-		</tr>
-		<tr id="74328">
-			<td id="12027"></td>
-			<td id="26814">Eis2</td>
-		</tr>
-	</tbody>
-</table>
-<span id="32055"> </span></div>
-
-<div class="ui-draggable ui-resizable context-menu-disabled" id="83490" style="position: absolute; top: 100px; left: 100px; width: 400px; height: 300px; z-index: 2147383667; cursor: auto;" tabindex="0"><iframe allow="encrypted-media" frameborder="0" height="300" id="54604" src="https://www.youtube.com/watch?v=coHIfWcwm60" width="400"></iframe></div>
-</div>
-`);
+            expect(translatedHtml).to.equal(fs.readFileSync('./tests/resources/6_translated.html', 'utf8'));
         });
     });
 });
