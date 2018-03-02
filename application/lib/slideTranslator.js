@@ -77,7 +77,7 @@ function handle_translation(original, target, user_id){
                         translated.revisions[0].content = new_line;
                         cbAsync();
                     }
-                });
+                }, true);
             },
 
         ], (err) => {

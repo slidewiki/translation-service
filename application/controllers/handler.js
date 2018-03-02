@@ -43,7 +43,7 @@ module.exports = {
             // TODO merge with HTML strip-recombine work (?)
 
             async.concatSeries(request.payload.content, (line, done) => {
-                translationImpl.translateLine(line, sourceCode, targetCode, done);
+                translationImpl.translateLine(line, sourceCode, targetCode, done, request.payload.html);
             }, (err, translations) => {
                 if (err) {
                     request.log('error', err);

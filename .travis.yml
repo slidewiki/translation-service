@@ -19,7 +19,7 @@ before_script:
 script:
 - sleep 15
 - npm run lint
-#- npm run test:unit
+- npm run test:unit
 #- npm run test:integration
 after_success:
 - cd ..
