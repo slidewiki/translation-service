@@ -36,8 +36,8 @@ module.exports = {
             let id = $(element).attr('id');
             //remove duplications
             if (existingIds.includes(id)) {
-              id = generateNewId();
-              $(element).attr('id', id)
+                id = generateNewId();
+                $(element).attr('id', id);
             }
             existingIds.push(id);
             return id;
