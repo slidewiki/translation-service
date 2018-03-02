@@ -41,6 +41,9 @@ describe('Unit Tests - htmlHandler.js', () => {
 
     const translatedText6 = ': 67711:: wfdedfsdf: 18077:: Text bullet 1: 75442:: Text bullet 2: 22340:: hohohohoho Dies ist meine Rache!: 38405:: Monat2: 68998:: Baum2: 29503:: Wiese2: 81919:: Vogel2: 26814:: Eis2';
 
+    const html7 = fs.readFileSync('./tests/resources/7.html', 'utf8');
+    const translatedText7 = ': 1:: Me: 2278366:: Not you: 101:: Human';
+
     context('Basic html to text', () => {
         it('no HTML, just text', () => {
             let {
@@ -174,6 +177,23 @@ extra content
             let translatedHtml = handler.setTranslatedTextInHtml(translatedText6, html);
 
             expect(translatedHtml).to.equal(fs.readFileSync('./tests/resources/6_translated.html', 'utf8'));
+        });
+        it('with duplications of ids', () => {
+            let {
+                text,
+                simpleText,
+                html
+            } = handler.htmlToText(html7);
+
+            console.log('New text:', text, '\n');
+            console.log('New html:', html, '\n');
+
+            // expect(simpleText).to.equal('Title of the year\n');
+
+            //now use translated text to update html
+            let translatedHtml = handler.setTranslatedTextInHtml(translatedText7, html);
+
+            expect(translatedHtml).to.equal(fs.readFileSync('./tests/resources/7_translated.html', 'utf8'));
         });
     });
 });

@@ -1,7 +1,7 @@
 'use strict';
 
 const cheerio = require('cheerio'),
-    REGEX_MASK_AFTER_TRANSLATION = /:\s\d{3,12}-?\d{0,5}::\s/g,
+    REGEX_MASK_AFTER_TRANSLATION = /:\s\d{1,12}-?\d{0,5}::\s/g,
     REGEX_EMPTY_STRING = /\r?\s|\n|\r|\t|-|\+*/g;
 
 
@@ -32,9 +32,15 @@ module.exports = {
         // console.log('body children:', $('body').contents(), '\n');
 
         //get existing ids
-        $('[id]').map((index, element) => {
-            existingIds.push($(element).attr('id'));
-            return $(element).attr('id');
+        $('[id]').map((index, element) => {//TODO handle ids which are no integer
+            let id = $(element).attr('id');
+            //remove duplications
+            if (existingIds.includes(id)) {
+              id = generateNewId();
+              $(element).attr('id', id)
+            }
+            existingIds.push(id);
+            return id;
         });
 
         // console.log('got all ids:', existingIds);
@@ -215,7 +221,7 @@ function generateNewId() {
     identifier++;
 
     while (existingIds.includes(id)) {
-        id = identifier;
+        id = identifier + 0;
         identifier++;
     }
 
