@@ -3,8 +3,8 @@
 
 module.exports = {
 
-    mockTranslation: false,
+    mockTranslation: process.env.SERVICE_TRANSLATION_MSAPI_KEY ? false : true,
 
-    mstranslatorApiKey: '77e543f1cd854a8dae6ba7dd1ce1d1b9',
+    mstranslatorApiKey: process.env.SERVICE_TRANSLATION_MSAPI_KEY ? process.env.SERVICE_TRANSLATION_MSAPI_KEY : '',
 
 };

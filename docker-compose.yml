@@ -12,4 +12,5 @@ template:
     - VIRTUAL_HOST=translationservice.experimental.slidewiki.org
     - LETSENCRYPT_HOST=translationservice.experimental.slidewiki.org
     - LETSENCRYPT_EMAIL=pbaptist@uni-bonn.de
+    - SERVICE_TRANSLATION_MSAPI_KEY=77e543f1cd854a8dae6ba7dd1ce1d1b9
     - SERVICE_URL_DECK=https://deckservice.experimental.slidewiki.org
