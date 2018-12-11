@@ -8,31 +8,6 @@ const Joi = require('joi'),
     handlers = require('./controllers/handler');
 
 module.exports = function(server) {
-    //Get an object with id id from database and translate it to the target language (when not available, return NOT FOUND). Validate id
-    server.route({
-        method: 'POST',
-        path: '/{type}/{id}',
-        handler: handlers.translateObject,
-        config: {
-            validate: {
-                params: {
-                    id: Joi.string(),
-                    type: Joi.string().valid(['slide', 'deck'])
-                },
-                payload: {
-                    target: Joi.string().min(5).max(5).required(),
-                    user: Joi.number().integer(),
-                }
-            },
-            plugins: {
-                'hapi-swagger': {
-                    deprecated: true,
-                },
-            },
-            tags: ['api'],
-            description: 'Translate an object'
-        }
-    });
 
     server.route({
         method: 'GET',
