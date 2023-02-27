@@ -43,11 +43,11 @@
   "devDependencies": {
     "chai": "^4.0.0",
     "chai-as-promised": "^7.0.0",
-    "coveralls": "^2.13.0",
+    "coveralls": "^3.1.1",
     "eslint": "^4.0.0",
     "eslint-plugin-promise": "^3.4.0",
     "istanbul": "^0.4.0",
-    "mocha": "^3.4.0",
+    "mocha": "^10.2.0",
     "nodemon": "^1.11.0",
     "pre-commit": "^1.2.0",
     "sloc": "^0.2.0"
